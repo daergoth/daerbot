@@ -11,4 +11,4 @@ client.on('message', message => {
     router.handleIncomingMessage(message);
 });
 
-client.login('YOUR BOT TOKEN');
+client.login(process.env.BOT_TOKEN);

@@ -11,6 +11,7 @@ npm install node-opus
 npm install hammerandchisel/erlpack
 npm install sodium
 npm install uws
+npm install requiredir
 ```
 ## Run
 ```
