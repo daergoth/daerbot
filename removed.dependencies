@@ -1,0 +1,8 @@
+# Had to remove these, because I could not build Discord
+"discord.js": "^11.2.1",
+"erlpack": "github:hammerandchisel/erlpack",
+"ffmpeg-binaries": "^3.2.2-3",
+"node-opus": "^0.2.7",
+"requiredir": "^1.0.7",
+"sodium": "^2.0.1",
+"uws": "^8.14.1"

@@ -4,13 +4,10 @@
   "description": "A simple Discord Bot developed for fun",
   "main": "src/server.js",
   "dependencies": {
-    "discord.js": "^11.2.1",
-    "erlpack": "github:hammerandchisel/erlpack",
-    "ffmpeg-binaries": "^3.2.2-3",
-    "node-opus": "^0.2.7",
-    "requiredir": "^1.0.7",
-    "sodium": "^2.0.1",
-    "uws": "^8.14.1"
+    "bluebird": "^3.5.0",
+    "decache": "^4.1.0",
+    "glob": "^7.1.2",
+    "require-all": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {
