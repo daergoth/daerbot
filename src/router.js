@@ -5,14 +5,12 @@ const decache = require('decache');
 
 const COMMAND_MODULE_GLOB = path.join(__dirname, 'command_modules', '*.js');
 
-const emptyHandler = () => void 0;
+const EMPTY_HANDLER = () => void 0;
 
-Object.freeze(emptyHandler);
+Object.freeze(EMPTY_HANDLER);
 
 const Router = {
-    Router(client) {
-        this.client = client;
-        
+    Router() {        
         this.commandModulePaths = [];
     },
     reloadCommandModules() {
@@ -71,7 +69,7 @@ const Router = {
             }
         }
 
-        return emptyHandler;
+        return EMPTY_HANDLER;
     }
 };
 

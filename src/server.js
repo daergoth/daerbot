@@ -1,22 +1,22 @@
-var client;
-
-if (process.env.CANT_LOAD_DISCORD_BECAUSE_I_CANT_BUILD_IT) {
-    client = {
-        on(...args) {
-            console.log('on called with:', ...args);
-        },
-        login(...args) {
-            console.log('login called with:', ...args);
-        }
-    };
-} else {
-    Discord = require('discord.js');
-
-    client = new Discord.Client();
-}
-
 const Router = require('./router');
 const Configuration = require('./configuration');
+
+const client = (function makeDiscordCliet() {
+    if (process.env.CANT_LOAD_DISCORD_BECAUSE_I_CANT_BUILD_IT) {
+        return {
+            on(...args) {
+                console.log('on called with:', ...args);
+            },
+            login(...args) {
+                console.log('login called with:', ...args);
+            }
+        };
+    } else {
+        const Discord = require('discord.js');
+
+        return new Discord.Client();
+    }
+})();
 
 const commandRouter = Object.create(Router);
 
@@ -43,7 +43,7 @@ Configuration.reloadConfiguration()
         }
     })
     .catch(function failure(err) {
-        console.log('Failure during setup: ', err);
+        console.log('Failure during setup:', err);
 
         console.log('Shutting down...');
     });
