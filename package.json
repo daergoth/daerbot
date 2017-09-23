@@ -8,9 +8,9 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "ffmpeg-binaries": "^3.2.2-3",
     "node-opus": "^0.2.7",
-    "requiredir": "^1.0.7",
     "sodium": "^2.0.1",
-    "uws": "^8.14.1"
+    "uws": "^8.14.1",
+    "ytdl-core": "^0.17.1"
   },
   "devDependencies": {},
   "scripts": {
