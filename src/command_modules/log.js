@@ -1,4 +1,4 @@
-var router = require("../commandRouter")
+var router = require("../commandRouter");
 
 var _logChannelName = "log";
 var _logStatus = false;
@@ -8,13 +8,13 @@ var _logListener = (oldMember, newMember) => {
 
     if (!logChannel) {
         oldMember.guild.createChannel(_logChannelName, "text")
-        .then(textChannel => {
-            console.log("Created channel: ", textChannel.name);  
-            logChannel = textChannel;
+            .then(textChannel => {
+                console.log("Created channel: ", textChannel.name);  
+                logChannel = textChannel;
 
-            handleStatusUpdate();
-        })
-        .catch(error => console.log(error));
+                handleStatusUpdate();
+            })
+            .catch(error => console.log(error));
     } else {
         handleStatusUpdate();
     }
@@ -29,7 +29,7 @@ var _logListener = (oldMember, newMember) => {
         }
     }
 
-}
+};
 
 var _commands = [
     {

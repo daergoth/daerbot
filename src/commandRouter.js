@@ -32,7 +32,7 @@ function _getRoutingFunction(commands) {
         }
     
         return false;
-    }
+    };
 }
 
 module.exports = {

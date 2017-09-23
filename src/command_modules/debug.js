@@ -1,4 +1,4 @@
-var router = require("../commandRouter")
+var router = require("../commandRouter");
 
 var _commands = [
     {
