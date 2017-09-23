@@ -2,7 +2,7 @@
   "name": "daerbot",
   "version": "1.0.0",
   "description": "A simple Discord Bot developed for fun",
-  "main": "server.js",
+  "main": "src/server.js",
   "dependencies": {
     "discord.js": "^11.2.1",
     "erlpack": "github:hammerandchisel/erlpack",
