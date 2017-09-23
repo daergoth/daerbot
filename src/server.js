@@ -1,7 +1,7 @@
 const Router = require('./router');
 const Configuration = require('./configuration');
 
-const client = (function makeDiscordCliet() {
+const client = (function makeDiscordClient() {
     if (process.env.CANT_LOAD_DISCORD_BECAUSE_I_CANT_BUILD_IT) {
         return {
             on(...args) {
