@@ -8,7 +8,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
-    router.handleIncomingMessage(message);
+    router.handleIncomingMessage(message, client);
 });
 
 client.login(process.env.BOT_TOKEN);

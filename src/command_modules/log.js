@@ -1,7 +1,8 @@
 var router = require("../commandRouter");
+var config = require("../config");
 
-var _logChannelName = "log";
-var _logStatus = false;
+var _logChannelName = config.getConfig("log.channelName", "log");
+var _logStatus = config.getConfig("log.status", false);
 
 var _logListener = (oldMember, newMember) => {
     let logChannel = oldMember.guild.channels.find(c => c.name === _logChannelName);
@@ -33,9 +34,11 @@ var _logListener = (oldMember, newMember) => {
 
 var _commands = [
     {
-        "command": ".logToggle",
-        "callback": function(message) {
+        command: "logtoggle",
+        callback: function(message) {
             _logStatus = !_logStatus;
+            config.setConfig("log.status", _logStatus);
+
             if (_logStatus) {
                 message.guild.client.on("voiceStateUpdate", _logListener);
             } else {
@@ -46,8 +49,8 @@ var _commands = [
         }
     }, 
     {
-        "command": ".logStatus",
-        "callback": function(message) {
+        command: "logstatus",
+        callback: function(message) {
             message.channel.send(`Logging status: ${_logStatus}`);
         }
     }
