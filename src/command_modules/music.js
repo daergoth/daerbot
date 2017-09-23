@@ -1,4 +1,3 @@
-const { URL } = require("url");
 var ytdl = require("ytdl-core");
 var router = require("../commandRouter");
 
@@ -23,7 +22,7 @@ var _commands = [
                     return;
                 }
 
-                let youtubeUrl = new URL(params[1]);
+                let youtubeUrl = params[1];
 
                 _broadcast = client.createVoiceBroadcast();
 
