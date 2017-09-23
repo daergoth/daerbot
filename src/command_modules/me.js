@@ -1,9 +1,12 @@
+var Discord = require("discord.js");
+var fs = require("fs");
 var router = require("../commandRouter");
 
 var _commands = [
     {
         command: "playing",
-        callback: function(message, client){
+        secure: true,
+        callback: function (message, client) {
             let params = message.content.split(" ");
 
             if (params.length < 2) {
@@ -16,14 +19,28 @@ var _commands = [
                 });
             }
         }
-    }, 
+    },
     {
         command: "say",
-        callback: function(message) {
+        callback: function (message) {
             let params = message.content.split(" ");
             if (params.length > 1) {
                 message.channel.send(params.slice(1).join(" "));
+                message.delete();
             }
+        }
+    },
+    {
+        command: "help",
+        callback: function (message, client) {
+            message.author.createDM()
+                .then(dm => {
+                    let embed = new Discord.RichEmbed()
+                        .setTitle("Help")
+                        .setDescription(fs.readFileSync("./README.md"))
+                        .setAuthor("DaerBot", client.user.avatarUrl);
+                    dm.send(embed);
+                });
         }
     }
 ];

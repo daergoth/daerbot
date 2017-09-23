@@ -14,10 +14,11 @@ npm install node-opus
 npm install hammerandchisel/erlpack
 npm install sodium
 npm install uws
+npm install ytdl-core
 ```
 ## Run
 ```
-npm start
+node src/server.js
 ```
 If the `I am ready` message shows up on the console the bot is up and running!
 ## Commands
@@ -25,7 +26,7 @@ If the `I am ready` message shows up on the console the bot is up and running!
 Debug
 * `.ping` - the bot replies with "pong" message
 * `.poke` - the bot replies with "Leave me alone, please."
-* `.reload` - reload  
+* `.reload` - reload (Authorized Role needed)
 
 Game
 * `.gather [question]` - if `question` is specified starts team gathering with the `question` as the title, otherwise shows the current standing
@@ -34,10 +35,17 @@ Game
 * `.lol? [question]` - like `.gather`, but with LoL default values
 
 Logging
-* `.logstatus` - shows if voice channel activity logging is on/off
-* `.logtoggle` - toggles voice channel activity logging state
+* `.logstatus` - shows if voice channel activity logging is on/off (Authorized Role needed)
+* `.logtoggle` - toggles voice channel activity logging state (Authorized Role needed)
 
 Me
-* `.playing [name]` - if `name` is specified, sets the bot's playing tag, otherwise just displays it
+* `.playing [name]` - if `name` is specified, sets the bot's playing tag, otherwise just displays it (Authorized Role needed)
 * `.say [text]` - the bot replies with `text`
+* `.help` - lists all commands
 
+Music
+* `.ytplay youtube-link` - plays the audio of the given `youtube-link` (Authorized Role needed)
+* `.pausemusic` - pauses the music (Authorized Role needed)
+* `.resumemusic` - resumes the music (Authorized Role needed)
+* `.stopmusic` - stops the music (Authorized Role needed)
+* `.volume percentage` - set to volume to the given `percentage` (0-100) (Authorized Role needed)

@@ -26,7 +26,9 @@ var _logListener = (oldMember, newMember) => {
         } else if (!newMember.voiceChannel) {
             logChannel.send(`${oldMember.user} disconnected from ${oldMember.voiceChannel}!`);
         } else {
-            logChannel.send(`${oldMember.user} switched from ${oldMember.voiceChannel} to ${newMember.voiceChannel}`);
+            if (oldMember.voiceChannel != newMember.voiceChannel) {
+                logChannel.send(`${oldMember.user} switched from ${oldMember.voiceChannel} to ${newMember.voiceChannel}`);
+            }
         }
     }
 
@@ -35,6 +37,7 @@ var _logListener = (oldMember, newMember) => {
 var _commands = [
     {
         command: "logtoggle",
+        secure: true,
         callback: function(message) {
             _logStatus = !_logStatus;
             config.setConfig("log.status", _logStatus);
@@ -50,6 +53,7 @@ var _commands = [
     }, 
     {
         command: "logstatus",
+        secure: true,
         callback: function(message) {
             message.channel.send(`Logging status: ${_logStatus}`);
         }

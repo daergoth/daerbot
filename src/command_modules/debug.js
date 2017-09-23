@@ -15,9 +15,15 @@ var _commands = [
     },
     {
         command:"reload",
+        secure: true,
         callback: function(message) {
-            router.reloadModules();
-            message.channel.send("Modules reloaded!");
+            let msg = "Modules reloaded!\n";
+            
+            router.reloadModules().forEach(m =>  {
+                msg += m + ": loaded!\n";
+            });
+
+            message.channel.send(msg);
         }
     }
 ];
