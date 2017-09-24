@@ -10,12 +10,15 @@ function _handleMessage(message, client) {
     if (!_moduleList) {
         _loadModules();
     }
-
-    for (let i = 0; i < _moduleList.length; ++i) {
-        if (_moduleList[i](message, client)) {
-            return;
+    
+    if (message.channel.type === "text") {
+        for (let i = 0; i < _moduleList.length; ++i) {
+            if (_moduleList[i](message, client)) {
+                return;
+            }
         }
     }
+    
 }
 
 function _loadModules() {
@@ -52,15 +55,16 @@ function _getRoutingFunction(commands) {
                     .then(guildMember => {
                         if(guildMember.roles.find(r => r.name === _authorizedRole)) {
                             command.callback(message, client);
-                            return true;
                         } else {
                             message.channel.send("You don't have permission to use this command!");
                         }
                     });
             } else {
                 command.callback(message, client);
-                return true;
             }
+
+            console.log(new Date(message.createdTimestamp).toISOString() + " " + message.author.tag + " " + message.content);
+            return true;
         }
 
         return false;

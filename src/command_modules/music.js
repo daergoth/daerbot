@@ -62,7 +62,7 @@ var _commands = [
         }
     },
     {
-        command: "pausemusic",
+        command: "ytpause",
         secure: true,
         callback: function (message, client) {
             if (_dispatcher) {
@@ -79,7 +79,7 @@ var _commands = [
         }
     },
     {
-        command: "resumemusic",
+        command: "ytresume",
         secure: true,
         callback: function (message, client) {
             if (_dispatcher) {
@@ -96,7 +96,7 @@ var _commands = [
         }
     },
     {
-        command: "stopmusic",
+        command: "ytstop",
         secure: true,
         callback: function (message, client) {
             if (_dispatcher) {

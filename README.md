@@ -42,10 +42,12 @@ Me
 * `.playing [name]` - if `name` is specified, sets the bot's playing tag, otherwise just displays it (Authorized Role needed)
 * `.say [text]` - the bot replies with `text`
 * `.help` - lists all commands
+* `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm")
+* `.clearalarm` - clears alarm
 
 Music
 * `.ytplay youtube-link` - plays the audio of the given `youtube-link` (Authorized Role needed)
-* `.pausemusic` - pauses the music (Authorized Role needed)
-* `.resumemusic` - resumes the music (Authorized Role needed)
-* `.stopmusic` - stops the music (Authorized Role needed)
+* `.ytpause` - pauses the music (Authorized Role needed)
+* `.ytresume` - resumes the music (Authorized Role needed)
+* `.ytstop` - stops the music (Authorized Role needed)
 * `.volume percentage` - set to volume to the given `percentage` (0-100) (Authorized Role needed)
