@@ -1,6 +1,7 @@
 var Discord = require("discord.js");
 var fs = require("fs");
 var router = require("../commandRouter");
+var config = require("../config");
 
 var _alarms = [];
 
@@ -98,13 +99,15 @@ var _commands = [
             let params = message.content.split(" ");
             if (params.length >= 2) {
                 try {
+                    let alarmOffset = parseInt(config.getConfig("alarm.timezone", "0000"));
+
                     let alarmInput = parseInt(params[1]);
                     let alarmTime = new Date(Date.now());
                     if (alarmTime.getHours() > alarmInput / 100) {
                         alarmTime.setDate(alarmTime.getDate() + 1);
                     }
-                    alarmTime.setHours(alarmInput / 100);
-                    alarmTime.setMinutes(alarmInput % 100);
+                    alarmTime.setHours(alarmInput / 100 + alarmOffset / 100);
+                    alarmTime.setMinutes(alarmInput % 100 + alarmOffset % 100);
 
                     let description = "Alarm";
                     if (params.length >= 3) {
@@ -153,6 +156,16 @@ var _commands = [
                 _alarms.splice(alarmIndex, 1);
             } else {
                 message.channel.send("There was no alarm to clear!");
+            }
+        }
+    },
+    {
+        command: "settimezone",
+        callback: function(message) {
+            let params = message.content.split(" ");
+            
+            if (params.length >= 2) {
+                config.setConfig("alarm.timezone", params[1]);
             }
         }
     }
