@@ -106,8 +106,8 @@ var _commands = [
                     if (alarmTime.getHours() > alarmInput / 100) {
                         alarmTime.setDate(alarmTime.getDate() + 1);
                     }
-                    alarmTime.setHours(alarmInput / 100 + alarmOffset / 100);
-                    alarmTime.setMinutes(alarmInput % 100 + alarmOffset % 100);
+                    alarmTime.setHours(alarmInput / 100 - alarmOffset / 100);
+                    alarmTime.setMinutes(alarmInput % 100 - alarmOffset % 100);
 
                     let description = "Alarm";
                     if (params.length >= 3) {
@@ -161,11 +161,18 @@ var _commands = [
     },
     {
         command: "settimezone",
+        secure: true,
         callback: function(message) {
             let params = message.content.split(" ");
             
             if (params.length >= 2) {
-                config.setConfig("alarm.timezone", params[1]);
+                try {
+                    parseInt(params[1]);
+                    config.setConfig("alarm.timezone", params[1]);
+                    message.channel.send("Timezone set to " + params[1] + "!");
+                } catch (error) {
+                    message.channel.send("Invalid timezone format! (0200 -> +02:00)");
+                }
             }
         }
     }

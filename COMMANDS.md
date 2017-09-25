@@ -21,6 +21,7 @@ Me
 * `.help` - lists all commands
 * `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm")
 * `.clearalarm` - clears alarm
+* `.settimezone offset` - sets the timezone, `offset` has the same format as `.alarm`'s `time` (0200 -> +02:00) (Authorized Role needed)
 
 Music
 * `.ytplay youtube-link` - plays the audio of the given `youtube-link` (Authorized Role needed)
