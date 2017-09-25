@@ -86,7 +86,7 @@ var _commands = [
                 .then(dm => {
                     let embed = new Discord.RichEmbed()
                         .setTitle("Help")
-                        .setDescription(fs.readFileSync("./README.md"))
+                        .setDescription(fs.readFileSync("./COMMANDS.md"))
                         .setAuthor("DaerBot", client.user.avatarUrl);
                     dm.send(embed);
                 });
