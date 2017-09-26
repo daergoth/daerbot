@@ -129,6 +129,8 @@ Object.setPrototypeOf(ClearAlarmHandler, ContentRegExpHandler);
 
 const SetTimezoneHandler = {
     SetTimezoneHandler() {
+        this.secure = true;
+        
         this.ContentRegExpHandler(/^.settimezone/);
     },
     handle(message) {

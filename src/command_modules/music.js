@@ -8,6 +8,8 @@ var voiceChannel;
 
 const YoutubePlayHandler = {
     YoutubePlayHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.ytplay/);
     },
     handle(message, client) {
@@ -66,6 +68,8 @@ Object.setPrototypeOf(YoutubePlayHandler, ContentRegExpHandler);
 
 const YoutubePauseHandler = {
     YoutubePauseHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.ytpause/);
     },
     handle(message, client) {
@@ -87,6 +91,8 @@ Object.setPrototypeOf(YoutubePauseHandler, ContentRegExpHandler);
 
 const YoutubeResumeHandler = {
     YoutubeResumeHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.ytresume/);
     },
     handle(message, client) {
@@ -108,6 +114,8 @@ Object.setPrototypeOf(YoutubeResumeHandler, ContentRegExpHandler);
 
 const YoutubeStopHandler = {
     YoutubeStopHandler() {
+        this.secure = true;
+        
         this.ContentRegExpHandler(/^.ytstop/);
     },
     handle(message, client) {
@@ -138,6 +146,8 @@ Object.setPrototypeOf(YoutubeStopHandler, ContentRegExpHandler);
 
 const VolumeHandler = {
     VolumeHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.volume/);
     },
     handle(message) {
@@ -162,7 +172,7 @@ const VolumeHandler = {
 
 Object.setPrototypeOf(VolumeHandler, ContentRegExpHandler);
 
-function registerHandlers(registerFunction, router) {
+function registerHandlers(registerFunction) {
     const youtubePlayHandler = Object.create(YoutubePlayHandler);
     youtubePlayHandler.YoutubePlayHandler();
 

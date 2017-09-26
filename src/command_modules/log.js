@@ -36,6 +36,8 @@ var logListener = (oldMember, newMember) => {
 
 const LogToggleHandler = {
     LogToggleHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.logtoggle/);
     },
     handle(message) {
@@ -56,6 +58,8 @@ Object.setPrototypeOf(LogToggleHandler, ContentRegExpHandler);
 
 const LogStatusHandler = {
     LogStatusHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.logstatus/);
     },
     handle(message) {

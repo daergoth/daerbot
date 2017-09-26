@@ -5,13 +5,11 @@ const decache = require("decache");
 
 const COMMAND_MODULE_GLOB = path.join(__dirname, "command_modules", "*.js");
 
-const EMPTY_HANDLER = () => void 0;
-
-Object.freeze(EMPTY_HANDLER);
-
 const Router = {
-    Router() {        
+    Router() {
         this.commandModulePaths = [];
+        this.preHandleHooks = [];
+        this.postHandleHooks = [];
     },
     reloadCommandModules() {
         return new Promise(function (resolve, reject) {
@@ -62,14 +60,30 @@ const Router = {
 
         console.log("Loaded module:", modulePath);
     },
+    registerPreHandleHook(preHandleHookFunction) {
+        this.preHandleHooks.push(preHandleHookFunction);
+    },
+    registerPostHandleHook(postHandleHookFunction) {
+        this.postHandleHooks.push(postHandleHookFunction);
+    },
+    runPreHandleHooks(handlerObject, message) {
+        return this.preHandleHooks.every(preHook => {
+            return preHook(handlerObject, message);
+        });
+    },
+    runPostHandleHooks(handlerObject, message) {
+        return this.postHandleHooks.every(postHook => {
+            return postHook(handlerObject, message);
+        });
+    },
     route(message) {
         for (const handlerObject of this.handlers) {
             if (handlerObject.canHandle(message)) {
-                return handlerObject.handle.bind(handlerObject, message);
+                return handlerObject;
             }
         }
 
-        return EMPTY_HANDLER;
+        return null;
     }
 };
 

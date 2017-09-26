@@ -4,6 +4,8 @@ const ContentRegExpHandler = require("../content-regexp-handler.js");
 
 const PlayingHandler = {
     PlayingHandler() {
+        this.secure = true;
+
         this.ContentRegExpHandler(/^.playing/);
     },
     handle(message, client) {
