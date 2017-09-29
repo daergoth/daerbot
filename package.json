@@ -16,6 +16,9 @@
     "glob": "^7.1.2",
     "require-all": "^2.2.0"
   },
+  "engines": {
+    "node": "8.5.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
