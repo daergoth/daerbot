@@ -1,5 +1,11 @@
 ## Commands
 
+Alarm
+* `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm")
+* `.clearalarm` - clears alarm
+* `.settimezone offset` - sets the timezone, `offset` has the same format as `.alarm`'s `time` (0200 -> +02:00) (Authorized Role needed)
+
+
 Debug
 * `.ping` - the bot replies with "pong" message
 * `.poke` - the bot replies with "Leave me alone, please."
@@ -19,9 +25,6 @@ Me
 * `.playing [name]` - if `name` is specified, sets the bot's playing tag, otherwise just displays it (Authorized Role needed)
 * `.say [text]` - the bot replies with `text`
 * `.help` - lists all commands
-* `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm")
-* `.clearalarm` - clears alarm
-* `.settimezone offset` - sets the timezone, `offset` has the same format as `.alarm`'s `time` (0200 -> +02:00) (Authorized Role needed)
 
 Music
 * `.ytplay youtube-link` - plays the audio of the given `youtube-link` (Authorized Role needed)

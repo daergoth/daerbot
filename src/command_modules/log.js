@@ -1,14 +1,14 @@
-var router = require("../commandRouter");
-var config = require("../config");
+const ContentRegExpHandler = require("../content-regexp-handler.js");
+const configuration = require("../configuration");
 
-var _logChannelName = config.getConfig("log.channelName", "log");
-var _logStatus = config.getConfig("log.status", false);
+var logChannelName = configuration.getConfig("log.channelName", "log");
+var logStatus = configuration.getConfig("log.status", false);
 
-var _logListener = (oldMember, newMember) => {
-    let logChannel = oldMember.guild.channels.find(c => c.name === _logChannelName);
+var logListener = (oldMember, newMember) => {
+    let logChannel = oldMember.guild.channels.find(c => c.name === logChannelName);
 
     if (!logChannel) {
-        oldMember.guild.createChannel(_logChannelName, "text")
+        oldMember.guild.createChannel(logChannelName, "text")
             .then(textChannel => {
                 console.log("Created channel: ", textChannel.name);  
                 logChannel = textChannel;
@@ -34,30 +34,52 @@ var _logListener = (oldMember, newMember) => {
 
 };
 
-var _commands = [
-    {
-        command: "logtoggle",
-        secure: true,
-        callback: function(message) {
-            _logStatus = !_logStatus;
-            config.setConfig("log.status", _logStatus);
+const LogToggleHandler = {
+    LogToggleHandler() {
+        this.secure = true;
 
-            if (_logStatus) {
-                message.guild.client.on("voiceStateUpdate", _logListener);
-            } else {
-                message.guild.client.removeListener("voiceStateUpdate", _logListener);
-            }
+        this.ContentRegExpHandler(/^.logtoggle/);
+    },
+    handle(message) {
+        logStatus = !logStatus;
+        configuration.setConfig("log.status", logStatus);
 
-            message.channel.send(`Logging status: ${_logStatus}`);
+        if (logStatus) {
+            message.guild.client.on("voiceStateUpdate", logListener);
+        } else {
+            message.guild.client.removeListener("voiceStateUpdate", logListener);
         }
-    }, 
-    {
-        command: "logstatus",
-        secure: true,
-        callback: function(message) {
-            message.channel.send(`Logging status: ${_logStatus}`);
-        }
+
+        message.channel.send(`Logging status: ${logStatus}`);
     }
-];
+};
 
-module.exports = router.getRoutingFunction(_commands);
+Object.setPrototypeOf(LogToggleHandler, ContentRegExpHandler);
+
+const LogStatusHandler = {
+    LogStatusHandler() {
+        this.secure = true;
+
+        this.ContentRegExpHandler(/^.logstatus/);
+    },
+    handle(message) {
+        message.channel.send(`Logging status: ${logStatus}`);
+    }
+};
+
+Object.setPrototypeOf(LogStatusHandler, ContentRegExpHandler);
+
+function registerHandlers(registerFunction) {
+    const logToggleHandler = Object.create(LogToggleHandler);
+    logToggleHandler.LogToggleHandler();
+
+    const logStatusHandler = Object.create(LogStatusHandler);
+    logStatusHandler.LogStatusHandler();
+
+    registerFunction(logToggleHandler);
+    registerFunction(logStatusHandler);
+}
+
+module.exports = {
+    registerHandlers
+};

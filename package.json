@@ -10,7 +10,11 @@
     "node-opus": "^0.2.7",
     "sodium": "^2.0.1",
     "uws": "^8.14.1",
-    "ytdl-core": "^0.17.1"
+    "ytdl-core": "^0.17.1",
+    "bluebird": "^3.5.0",
+    "decache": "^4.1.0",
+    "glob": "^7.1.2",
+    "require-all": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {

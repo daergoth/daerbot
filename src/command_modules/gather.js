@@ -1,150 +1,213 @@
-var Discord = require("discord.js");
-var config = require("../config");
-var router = require("../commandRouter");
+const Discord = require("discord.js");
+const configuration = require("../configuration");
+const ContentRegExpHandler = require("../content-regexp-handler.js");
 
-var CSGO_ICON_URL = config.getConfig("gather.csgo.image","https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
-var LOL_ICON_URL = config.getConfig("gather.lol.image","http://vignette1.wikia.nocookie.net/leagueoflegends/images/8/86/League_of_legends_logo_transparent.png");
-var DEFAULT_CSGO_TITLE = config.getConfig("gather.csgo.title","CS:GO Matchmaking?");
-var DEFAULT_LOL_TITLE = config.getConfig("gather.lol.title","LoL Ranked?");
+const CSGO_ICON_URL = configuration.getConfig("gather.csgo.image",
+    "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
+const LOL_ICON_URL = configuration.getConfig("gather.lol.image",
+    "http://vignette1.wikia.nocookie.net/leagueoflegends/images/8/86/League_of_legends_logo_transparent.png");
+const DEFAULT_CSGO_TITLE = configuration.getConfig("gather.csgo.title", "CS:GO Matchmaking?");
+const DEFAULT_LOL_TITLE = configuration.getConfig("gather.lol.title", "LoL Ranked?");
 
-var _isCSGO = false;
-var _isLoL = false;
+var joinListener = function (storage, message) {
+    let playerList = storage.getFromChannelLevel(message.channel, "gather.playerList", true, []);
+    let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
+    let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
 
-var _isGathering = false;
-var _starterMessage;
+    if (message.content === "+" && !playerList.includes(message.author)) {
+        playerList.push(message.author);
 
-var _gatherMessages = [];
-var _currentRichEmbed;
+        currentRichEmbed.addField("\u200B", playerList.length + " - " + message.author);
 
-var _playerList = [];
-var _joinListener = function (message) {
-    if (message.content === "+" && !_playerList.includes(message.author)) {
-        _playerList.push(message.author);
-
-        _currentRichEmbed.addField("\u200B", _playerList.length + " - " + message.author);
-
-        _gatherMessages.forEach(gM => gM.edit(_currentRichEmbed));
+        gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
 
         message.delete(2000);
+
+        storage.saveOnChannelLevel(message.channel, "gather", {
+            playerList: playerList,
+            currentRichEmbed: currentRichEmbed
+        });
     }
 };
-var _endTimeout;
 
-function _sendGatherStatus(message) {
-    if (_currentRichEmbed === undefined) {
+function sendGatherStatus(message, storage) {
+    let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
+    if (!currentRichEmbed) {
         let title = "";
         if (message.content.split(" ").length > 1) {
             title = message.content.split(" ")[1];
         } else {
-            if (_isCSGO) {
+            if (storage.getFromChannelLevel(message.channel, "gather.isCSGO")) {
                 title = DEFAULT_CSGO_TITLE;
-            } else if (_isLoL) {
+            } else if (storage.getFromChannelLevel(message.channel, "gather.isLoL")) {
                 title = DEFAULT_LOL_TITLE;
             }
         }
 
-        _currentRichEmbed = new Discord.RichEmbed()
-            .setAuthor(_starterMessage.author.username, _starterMessage.author.avatarURL)
+        currentRichEmbed = new Discord.RichEmbed()
+            .setAuthor(storage.getFromChannelLevel(message.channel, "gather.starterMessage.author.username"),
+                storage.getFromChannelLevel(message.channel, "gather.starterMessage.author.avatarURL"))
             .setTitle(title)
             .setDescription("Type '+' to join this gathering!")
             .setColor([255, 0, 0]);
 
-        for (let i = 0; i < _playerList.length; ++i) {
-            _currentRichEmbed.addField("\u200B", i + 1 + " - " + _playerList[i]);
+        if (storage.getFromChannelLevel(message.channel, "gather.isCSGO")) {
+            currentRichEmbed.setThumbnail(CSGO_ICON_URL);
+        } else if (storage.getFromChannelLevel(message.channel, "gather.isLoL")) {
+            currentRichEmbed.setThumbnail(LOL_ICON_URL);
         }
 
-        if (_isCSGO) {
-            _currentRichEmbed.setThumbnail(CSGO_ICON_URL);
-        } else if (_isLoL) {
-            _currentRichEmbed.setThumbnail(LOL_ICON_URL);
-        }
+        storage.saveOnChannelLevel(message.channel, "gather", {
+            currentRichEmbed: currentRichEmbed
+        });
     }
 
-    message.channel.send(_currentRichEmbed)
-        .then(m => _gatherMessages.push(m));
+    message.channel.send(currentRichEmbed)
+        .then(m => {
+            let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
+            gatherMessages.push(m);
+            storage.saveOnChannelLevel(message.channel, "gather", {
+                gatherMessages: gatherMessages
+            });
+        });
 }
 
-function _clearGathering(message, client) {
-    if (!_isGathering) {
+
+function clearGathering(message, storage) {
+    if (!storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
         return;
     }
 
-    client.removeListener("message", _joinListener);
-    clearTimeout(_endTimeout);
+    message.client.removeListener("message", storage.getFromChannelLevel(message.channel, "gather.joinListener"));
 
-    _currentRichEmbed.setFooter("ENDED!");
-    message.channel.send(_currentRichEmbed);
-    _gatherMessages.forEach(gM => gM.edit(_currentRichEmbed));
+    if (storage.getFromChannelLevel(message.channel, "gather.endTimeout")) {
+        clearTimeout(storage.getFromChannelLevel(message.channel, "gather.endTimeout"));
+    }
 
-    _starterMessage = undefined;
-    _isGathering = false;
-    _currentRichEmbed = undefined;
-    _playerList = [];
-    _gatherMessages = [];
-    _isCSGO = false;
-    _isLoL = false;
+    let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
+
+    currentRichEmbed.setFooter("ENDED!");
+    message.channel.send(currentRichEmbed);
+    storage.getFromChannelLevel(message.channel, "gather.gatherMessages")
+        .forEach(gM => gM.edit(currentRichEmbed));
+
+    storage.saveOnChannelLevel(message.channel, "gather", {
+        starterMessage: undefined,
+        currentRichEmbed: undefined,
+        endTimeout: undefined,
+        playerList: [],
+        gatherMessages: [],
+        isCSGO: false,
+        isLoL: false,
+        isGathering: false
+    });
 }
 
-function _doGather(message, client) {
-    _starterMessage = message;
+function doGather(message, storage) {
+    let listener = joinListener.bind(this, storage);
 
-    _sendGatherStatus(message);
+    storage.saveOnChannelLevel(message.channel, "gather", {
+        starterMessage: message,
+        isGathering: true,
+        // 5 min timeout to auto-stop gathering
+        endTimeout: setTimeout(clearGathering, 300000, message, storage),
+        joinListener: listener
+    });
 
-    client.on("message", _joinListener);
+    sendGatherStatus(message, storage);
 
-    _isGathering = true;
-
-    // 5 min timeout to auto-stop gathering
-    _endTimeout = setTimeout(_clearGathering, 300000, message, client);
+    message.client.on("message", listener);
 }
 
-var _commands = [
-    {
-        command: "gatherend",
-        callback: function (message, client) {
-            _clearGathering(message, client);
-        }
+const GatherEndHandler = {
+    GatherEndHandler() {
+        this.ContentRegExpHandler(/^.gatherend/);
     },
-    {
-        command: "gather",
-        callback: function (message, client) {
-            let params = message.content.split(" ");
+    handle(message, storage) {
+        clearGathering(message, storage);
+    }
+};
 
-            if (params.length >= 2) {
-                _doGather(message, client);
-            } else {
-                if (_isGathering) {
-                    _sendGatherStatus(message);
-                } else {
-                    message.channel.send("Invalid command! .gather Question?");
-                }
-            }
-        }
+Object.setPrototypeOf(GatherEndHandler, ContentRegExpHandler);
+
+const GatherHandler = {
+    GatherHandler() {
+        this.ContentRegExpHandler(/^.gather/);
     },
-    {
-        command: "csgo?",
-        callback: function (message, client) {
-            if (_isGathering) {
-                _sendGatherStatus(message);
-            } else {
-                _isCSGO = true;
+    handle(message, storage) {
+        let params = message.content.split(" ");
 
-                _doGather(message, client);
-            }
-        }
-    },
-    {
-        command: "lol?",
-        callback: function (message, client) {
-            if (_isGathering) {
-                _sendGatherStatus(message);
+        if (params.length >= 2) {
+            doGather(message, storage);
+        } else {
+            if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+                sendGatherStatus(message, storage);
             } else {
-                _isLoL = true;
-
-                _doGather(message, client);
+                message.channel.send("Invalid command! .gather Question?");
             }
         }
     }
-];
+};
 
-module.exports = router.getRoutingFunction(_commands);
+Object.setPrototypeOf(GatherHandler, ContentRegExpHandler);
+
+const CsgoHandler = {
+    CsgoHandler() {
+        this.ContentRegExpHandler(/^.csgo?/);
+    },
+    handle(message, storage) {
+        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+            sendGatherStatus(message, storage);
+        } else {
+            storage.saveOnChannelLevel(message.channel, "gather", {
+                isCSGO: true
+            });
+
+            doGather(message, storage);
+        }
+    }
+};
+
+Object.setPrototypeOf(CsgoHandler, ContentRegExpHandler);
+
+const LolHandler = {
+    LolHandler() {
+        this.ContentRegExpHandler(/^.lol?/);
+    },
+    handle(message, storage) {
+        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+            sendGatherStatus(message, storage);
+        } else {
+            storage.saveOnChannelLevel(message.channel, "gather", {
+                isLoL: true
+            });
+
+            doGather(message, storage);
+        }
+    }
+};
+
+Object.setPrototypeOf(LolHandler, ContentRegExpHandler);
+
+function registerHandlers(registerFunction) {
+    const gatherEndHandler = Object.create(GatherEndHandler);
+    gatherEndHandler.GatherEndHandler();
+
+    const gatherHandler = Object.create(GatherHandler);
+    gatherHandler.GatherHandler();
+
+    const csgoHandler = Object.create(CsgoHandler);
+    csgoHandler.CsgoHandler();
+
+    const lolHandler = Object.create(LolHandler);
+    lolHandler.LolHandler();
+
+    registerFunction(gatherEndHandler);
+    registerFunction(gatherHandler);
+    registerFunction(csgoHandler);
+    registerFunction(lolHandler);
+}
+
+module.exports = {
+    registerHandlers
+};
