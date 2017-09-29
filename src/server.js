@@ -1,14 +1,17 @@
 const Discord = require("discord.js");
 const Router = require("./router");
+const Storage = require("./storage");
 const Configuration = require("./configuration");
 
 const client = new Discord.Client();
 
 const commandRouter = Object.create(Router);
+const storage = Object.create(Storage);
 
 Configuration.reloadConfiguration()
     .then(function configurationLoaded() {
         commandRouter.Router();
+        storage.Storage();
 
         return commandRouter.reloadCommandModules();
     })
@@ -85,7 +88,7 @@ Configuration.reloadConfiguration()
                     return;
                 }
     
-                handlerObject.handle(message, client);
+                handlerObject.handle(message, storage);
     
                 commandRouter.runPostHandleHooks(handlerObject, message);
             }

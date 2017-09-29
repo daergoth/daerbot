@@ -1,10 +1,1 @@
-{
-    "log.status": false,
-    "log.channelName": "log",
-    "gather.csgo.image": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg",
-    "gather.csgo.title": "CS:GO Matchmaking?",
-    "gather.lol.image": "http://vignette1.wikia.nocookie.net/leagueoflegends/images/8/86/League_of_legends_logo_transparent.png",
-    "gather.lol.title": "LoL Ranked?",
-    "alarm.timezone": "0000",
-    "server.adminRole": "DaerBot"
-}
+{"log.status":false,"log.channelName":"log","gather.csgo.image":"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg","gather.csgo.title":"CS:GO Matchmaking?","gather.lol.image":"http://vignette1.wikia.nocookie.net/leagueoflegends/images/8/86/League_of_legends_logo_transparent.png","gather.lol.title":"LoL Ranked?","alarm.timezone":"0000","server.adminRole":"DaerBot"}

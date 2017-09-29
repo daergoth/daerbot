@@ -2,28 +2,28 @@ const Discord = require("discord.js");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler");
 
-var alarms = [];
-
-function alarmTimer(message) {
+function alarmTimer(message, storage) {
 
     message.author.createDM()
         .then(dm => {
+            let userAlarms = storage.getFromUserLevel(message.author, "alarms", true, []);
+
             let secondsLeft = 60;
-            let alarmIndex = alarms.findIndex(a => a.message === message);
+            let alarmIndex = userAlarms.findIndex(alarm => alarm.message === message);
 
             let embed = new Discord.RichEmbed()
                 .setTitle(secondsLeft + "\"")
-                .setDescription(alarms[alarmIndex].description);
+                .setDescription(userAlarms[alarmIndex].description);
 
             dm.send(embed)
                 .then(countingMessage => {
                     let countdownInterval = setInterval(updateAlarmMessage, 5000, countingMessage);
 
-                    alarms[alarmIndex].interval = countdownInterval;
-                    alarms[alarmIndex].countdown = countingMessage;
+                    userAlarms[alarmIndex].interval = countdownInterval;
+                    userAlarms[alarmIndex].countdown = countingMessage;
 
-                    if (alarms[alarmIndex].timeout) {
-                        clearTimeout(alarms[alarmIndex].timeout);
+                    if (userAlarms[alarmIndex].timeout) {
+                        clearTimeout(userAlarms[alarmIndex].timeout);
                     }
 
                     function updateAlarmMessage(messageToUpdate) {
@@ -43,7 +43,9 @@ function alarmTimer(message) {
                                 .then(m => m.delete());
 
                             clearInterval(countdownInterval);
-                            alarms.splice(alarmIndex, 1);
+                            userAlarms.splice(alarmIndex, 1);
+
+                            storage.saveOnUserLevel(message.author, "alarms", userAlarms);
                         }
                     }
                 });
@@ -55,7 +57,7 @@ const AlarmHandler = {
     AlarmHandler() {
         this.ContentRegExpHandler(/^.alarm/);
     },
-    handle(message) {
+    handle(message, storage) {
         let params = message.content.split(" ");
         if (params.length >= 2) {
             try {
@@ -74,13 +76,16 @@ const AlarmHandler = {
                     description = params.slice(2).join(" ");
                 }
 
-                let alarmTimeout = setTimeout(alarmTimer, alarmTime.getTime() - Date.now() - 60000, message);
+                let alarmTimeout = setTimeout(alarmTimer, alarmTime.getTime() - Date.now() - 60000, message, storage);
 
-                alarms.push({
+                let userAlarms = storage.getFromUserLevel(message.author, "alarms", true, []);
+                userAlarms.push({
                     message: message,
                     description: description,
                     timeout: alarmTimeout
                 });
+                storage.saveOnUserLevel(message.author, "alarms", userAlarms);
+                
             } catch (error) {
                 console.log(error);
             }
@@ -96,29 +101,32 @@ const ClearAlarmHandler = {
     ClearAlarmHandler() {
         this.ContentRegExpHandler(/^.clearalarm/);
     },
-    handle(message) {
-        let alarmIndex = alarms.findIndex(a => a.message.author === message.author);
+    handle(message, storage) {
+        let userAlarms = storage.getFromUserLevel(message.author, "alarms", true, []);
+
+        let alarmIndex = userAlarms.findIndex(a => a.message.author === message.author);
 
         if (alarmIndex > -1) {
-            message.channel.send(`Alarm cleared with description: '${alarms[alarmIndex].description}'!`);
+            message.channel.send(`Alarm cleared with description: '${userAlarms[alarmIndex].description}'!`);
 
-            if (alarms[alarmIndex].countdown) {
+            if (userAlarms[alarmIndex].countdown) {
                 let embed = new Discord.RichEmbed()
                     .setTitle("Alarm cleared!")
-                    .setDescription(alarms[alarmIndex].description);
+                    .setDescription(userAlarms[alarmIndex].description);
 
-                alarms[alarmIndex].countdown.edit(embed);
+                userAlarms[alarmIndex].countdown.edit(embed);
             }
 
-            if (alarms[alarmIndex].timeout) {
-                clearTimeout(alarms[alarmIndex].timeout);
+            if (userAlarms[alarmIndex].timeout) {
+                clearTimeout(userAlarms[alarmIndex].timeout);
             }
 
-            if (alarms[alarmIndex].interval) {
-                clearInterval(alarms[alarmIndex].interval);
+            if (userAlarms[alarmIndex].interval) {
+                clearInterval(userAlarms[alarmIndex].interval);
             }
 
-            alarms.splice(alarmIndex, 1);
+            userAlarms.splice(alarmIndex, 1);
+            storage.saveOnUserLevel(message.author, "alarms", userAlarms);
         } else {
             message.channel.send("There was no alarm to clear!");
         }
@@ -130,7 +138,7 @@ Object.setPrototypeOf(ClearAlarmHandler, ContentRegExpHandler);
 const SetTimezoneHandler = {
     SetTimezoneHandler() {
         this.secure = true;
-        
+
         this.ContentRegExpHandler(/^.settimezone/);
     },
     handle(message) {

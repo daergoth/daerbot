@@ -8,17 +8,17 @@ const PlayingHandler = {
 
         this.ContentRegExpHandler(/^.playing/);
     },
-    handle(message, client) {
+    handle(message) {
         let params = message.content.split(" ");
 
         if (params.length >= 2) {
-            client.user.setPresence({
+            message.client.user.setPresence({
                 game: {
                     name: params.slice(1).join(" ")
                 }
             });
         } else {
-            message.channel.send("I'm playing " + client.user.presence.game.name);
+            message.channel.send("I'm playing " + message.client.user.presence.game.name);
         }
     }
 };
@@ -44,13 +44,13 @@ const HelpHandler = {
     HelpHandler() {
         this.ContentRegExpHandler(/^.help/);
     },
-    handle(message, client) {
+    handle(message) {
         message.author.createDM()
             .then(dm => {
                 let embed = new Discord.RichEmbed()
                     .setTitle("Help")
                     .setDescription(fs.readFileSync("./COMMANDS.md"))
-                    .setAuthor("DaerBot", client.user.avatarUrl);
+                    .setAuthor("DaerBot", message.client.user.avatarUrl);
                 dm.send(embed);
             });
     }
