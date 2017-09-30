@@ -42,6 +42,8 @@ Object.setPrototypeOf(SayHandler, ContentRegExpHandler);
 
 const HelpHandler = {
     HelpHandler() {
+        this.canBeDM = true;
+
         this.ContentRegExpHandler(/^.help/);
     },
     handle(message) {

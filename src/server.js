@@ -24,7 +24,12 @@ Configuration.reloadConfiguration()
 
         commandRouter.registerPreHandleHook(
             function filterTextChannelMessagePreHandleHook(handlerObject, message) {
-                return message.channel.type === "text";
+                if (handlerObject.canBeDM) {
+                    return message.channel.type === "text" ||
+                        message.channel.type === "dm";
+                } else {
+                    return message.channel.type === "text";
+                }
             }
         );
 
@@ -87,9 +92,9 @@ Configuration.reloadConfiguration()
                 if (!commandRouter.runPreHandleHooks(handlerObject, message)) {
                     return;
                 }
-    
+
                 handlerObject.handle(message, storage);
-    
+
                 commandRouter.runPostHandleHooks(handlerObject, message);
             }
         });
