@@ -55,6 +55,8 @@ function alarmTimer(message, storage) {
 
 const AlarmHandler = {
     AlarmHandler() {
+        this.canBeDM = true;
+
         this.ContentRegExpHandler(/^.alarm/);
     },
     handle(message, storage) {
@@ -99,6 +101,8 @@ Object.setPrototypeOf(AlarmHandler, ContentRegExpHandler);
 
 const ClearAlarmHandler = {
     ClearAlarmHandler() {
+        this.canBeDM = true;
+
         this.ContentRegExpHandler(/^.clearalarm/);
     },
     handle(message, storage) {
