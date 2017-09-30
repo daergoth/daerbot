@@ -38,7 +38,7 @@ const LogToggleHandler = {
     LogToggleHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.logtoggle/);
+        this.ContentRegExpHandler(/^\.logtoggle/);
     },
     handle(message) {
         logStatus = !logStatus;
@@ -60,7 +60,7 @@ const LogStatusHandler = {
     LogStatusHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.logstatus/);
+        this.ContentRegExpHandler(/^\.logstatus/);
     },
     handle(message) {
         message.channel.send(`Logging status: ${logStatus}`);

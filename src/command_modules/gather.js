@@ -121,7 +121,7 @@ function doGather(message, storage) {
 
 const GatherEndHandler = {
     GatherEndHandler() {
-        this.ContentRegExpHandler(/^.gatherend/);
+        this.ContentRegExpHandler(/^\.gatherend/);
     },
     handle(message, storage) {
         clearGathering(message, storage);
@@ -132,12 +132,14 @@ Object.setPrototypeOf(GatherEndHandler, ContentRegExpHandler);
 
 const GatherHandler = {
     GatherHandler() {
-        this.ContentRegExpHandler(/^.gather/);
+        this.ContentRegExpHandler(/^\.gather/);
     },
     handle(message, storage) {
         let params = message.content.split(" ");
 
         if (params.length >= 2) {
+
+
             doGather(message, storage);
         } else {
             if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
@@ -153,7 +155,7 @@ Object.setPrototypeOf(GatherHandler, ContentRegExpHandler);
 
 const CsgoHandler = {
     CsgoHandler() {
-        this.ContentRegExpHandler(/^.csgo?/);
+        this.ContentRegExpHandler(/^\.csgo\?/);
     },
     handle(message, storage) {
         if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
@@ -172,7 +174,7 @@ Object.setPrototypeOf(CsgoHandler, ContentRegExpHandler);
 
 const LolHandler = {
     LolHandler() {
-        this.ContentRegExpHandler(/^.lol?/);
+        this.ContentRegExpHandler(/^\.lol\?/);
     },
     handle(message, storage) {
         if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {

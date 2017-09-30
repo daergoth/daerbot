@@ -6,7 +6,7 @@ const PlayingHandler = {
     PlayingHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.playing/);
+        this.ContentRegExpHandler(/^\.playing/);
     },
     handle(message) {
         let params = message.content.split(" ");
@@ -27,7 +27,7 @@ Object.setPrototypeOf(PlayingHandler, ContentRegExpHandler);
 
 const SayHandler = {
     SayHandler() {
-        this.ContentRegExpHandler(/^.say/);
+        this.ContentRegExpHandler(/^\.say/);
     },
     handle(message) {
         let params = message.content.split(" ");
@@ -44,7 +44,7 @@ const HelpHandler = {
     HelpHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^.help/);
+        this.ContentRegExpHandler(/^\.help/);
     },
     handle(message) {
         message.author.createDM()

@@ -57,7 +57,7 @@ const AlarmHandler = {
     AlarmHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^.alarm/);
+        this.ContentRegExpHandler(/^\.alarm/);
     },
     handle(message, storage) {
         let params = message.content.split(" ");
@@ -103,7 +103,7 @@ const ClearAlarmHandler = {
     ClearAlarmHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^.clearalarm/);
+        this.ContentRegExpHandler(/^\.clearalarm/);
     },
     handle(message, storage) {
         let userAlarms = storage.getFromUserLevel(message.author, "alarms", true, []);
@@ -143,7 +143,7 @@ const SetTimezoneHandler = {
     SetTimezoneHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.settimezone/);
+        this.ContentRegExpHandler(/^\.settimezone/);
     },
     handle(message) {
         let params = message.content.split(" ");

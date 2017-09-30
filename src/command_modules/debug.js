@@ -3,7 +3,7 @@ const ContentRegExpHandler = require("../content-regexp-handler.js");
 
 const PokeHandler = {
     PokeHandler() {
-        this.ContentRegExpHandler(/^.poke/);
+        this.ContentRegExpHandler(/^\.poke/);
     },
     handle(message) {
         message.channel.send("Leave me alone, please.");
@@ -14,7 +14,7 @@ Object.setPrototypeOf(PokeHandler, ContentRegExpHandler);
 
 const PingHandler = {
     PingHandler() {
-        this.ContentRegExpHandler(/^.ping/);
+        this.ContentRegExpHandler(/^\.ping/);
     },
     handle(message) {
         message.channel.send("Pong.");
@@ -28,7 +28,7 @@ const ReloadHandler = {
         this.secure = true;
         this.router = router;
 
-        this.ContentRegExpHandler(/^.reload/);
+        this.ContentRegExpHandler(/^\.reload/);
     },
     handle(message, storage) {
         promisify(storage.persist())

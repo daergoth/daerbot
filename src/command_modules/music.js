@@ -5,7 +5,7 @@ const YoutubePlayHandler = {
     YoutubePlayHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.ytplay/);
+        this.ContentRegExpHandler(/^\.ytplay/);
     },
     handle(message, storage) {
         let params = message.content.split(" ");
@@ -74,7 +74,7 @@ const YoutubePauseHandler = {
     YoutubePauseHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.ytpause/);
+        this.ContentRegExpHandler(/^\.ytpause/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -98,7 +98,7 @@ const YoutubeResumeHandler = {
     YoutubeResumeHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.ytresume/);
+        this.ContentRegExpHandler(/^\.ytresume/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -122,7 +122,7 @@ const YoutubeStopHandler = {
     YoutubeStopHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.ytstop/);
+        this.ContentRegExpHandler(/^\.ytstop/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -166,7 +166,7 @@ const VolumeHandler = {
     VolumeHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^.volume/);
+        this.ContentRegExpHandler(/^\.volume/);
     },
     handle(message, storage) {
         let params = message.content.split(" ");
