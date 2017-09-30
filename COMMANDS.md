@@ -1,10 +1,11 @@
 ## Commands
 
 Alarm
-* `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm") (can be used in DM)
-* `.clearalarm` - clears alarm (can be used in DM)
+* `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm") (Authorized Role needed)
+* `.clearalarm` - clears an alarm (Authorized Role needed)
+* `.selfalarm time [description]` - sets a personal alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm") (can be used in DM)
+* `.clearselfalarm` - clears a personal alarm (can be used in DM)
 * `.settimezone offset` - sets the timezone, `offset` has the same format as `.alarm`'s `time` (0200 -> +02:00) (Authorized Role needed)
-
 
 Debug
 * `.ping` - the bot replies with "pong" message
