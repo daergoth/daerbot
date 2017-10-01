@@ -10,23 +10,26 @@ const DEFAULT_CSGO_TITLE = configuration.getConfig("gather.csgo.title", "CS:GO M
 const DEFAULT_LOL_TITLE = configuration.getConfig("gather.lol.title", "LoL Ranked?");
 
 var joinListener = function (storage, message) {
+    let starterMessage = storage.getFromChannelLevel(message.channel, "gather.starterMessage");
     let playerList = storage.getFromChannelLevel(message.channel, "gather.playerList", true, []);
     let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
     let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
 
-    if (message.content === "+" && !playerList.includes(message.author)) {
-        playerList.push(message.author);
-
-        currentRichEmbed.addField("\u200B", playerList.length + " - " + message.author);
-
-        gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
-
-        message.delete(2000);
-
-        storage.saveOnChannelLevel(message.channel, "gather", {
-            playerList: playerList,
-            currentRichEmbed: currentRichEmbed
-        });
+    if (starterMessage && message.channel === starterMessage.channel) {
+        if (message.content === "+" && !playerList.includes(message.author)) {
+            playerList.push(message.author);
+    
+            currentRichEmbed.addField("\u200B", playerList.length + " - " + message.author);
+    
+            gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
+    
+            message.delete(2000);
+    
+            storage.saveOnChannelLevel(message.channel, "gather", {
+                playerList: playerList,
+                currentRichEmbed: currentRichEmbed
+            });
+        }
     }
 };
 

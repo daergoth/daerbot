@@ -1,6 +1,7 @@
 const fs = require("fs");
+const promisify = require("util").promisify;
 
-const storageFileName = "../storage.json";
+const storageFileName = "./storage.json";
 
 const Storage = {
     Storage() {
@@ -214,12 +215,8 @@ const Storage = {
 
         return result;
     },
-
     persist() {
-        fs.writeFile(storageFileName, JSON.stringify(this.db),
-            function persistError(err) {
-                console.error(`Error while persisting storage: ${err}`);
-            });
+        return promisify(fs.writeFile.bind(this))(storageFileName, JSON.stringify(this.db));
     },
     load() {
         fs.exists(storageFileName,

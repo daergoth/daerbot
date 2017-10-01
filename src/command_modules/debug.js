@@ -1,4 +1,3 @@
-const promisify = require("util").promisify;
 const ContentRegExpHandler = require("../content-regexp-handler.js");
 
 const PokeHandler = {
@@ -31,7 +30,7 @@ const ReloadHandler = {
         this.ContentRegExpHandler(/^\.reload/);
     },
     handle(message, storage) {
-        promisify(storage.persist())
+        storage.persist()
             .then(function storagePersisted() {
                 this.router.reloadCommandModules()
                     .then(function success(modulePaths) {
@@ -43,7 +42,7 @@ const ReloadHandler = {
                         message.channel.send("Failed to reload modules!");
                         console.warn(`Failed .reload: ${err}`);
                     });
-            })
+            }.bind(this))
             .then(function modulesReloaded() {
                 storage.load();
             });
