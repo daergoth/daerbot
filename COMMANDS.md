@@ -33,3 +33,8 @@ Music
 * `.ytresume` - resumes the music (Authorized Role needed)
 * `.ytstop` - stops the music (Authorized Role needed)
 * `.volume percentage` - set to volume to the given `percentage` (0-100) (Authorized Role needed)
+
+Poll
+* `.poll question;option;option[;option...]` - starts a poll with the `question` and all the `options`
+* `.pollstat` - shows the current standing of the poll, if there is one
+* `.pollend` - closes the current poll and shows the final result

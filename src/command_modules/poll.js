@@ -100,7 +100,7 @@ Object.setPrototypeOf(PollEndHandler, ContentRegExpHandler);
 
 const PollStatHandler = {
     PollStatHandler() {
-        this.ContentRegExpHandler(/^\.pollstats/);
+        this.ContentRegExpHandler(/^\.pollstat/);
     },
     handle(message, storage) {
         let embed = generatePollEmbed(message.channel, storage);
