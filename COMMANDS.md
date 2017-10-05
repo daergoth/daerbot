@@ -38,3 +38,4 @@ Poll
 * `.poll question;option;option[;option...]` - starts a poll with the `question` and all the `options`
 * `.pollstat` - shows the current standing of the poll, if there is one
 * `.pollend` - closes the current poll and shows the final result
+* `.map?` - starts a poll with CS:GO active map pool defaults

@@ -40,17 +40,21 @@ function generatePollEmbed(channel, storage) {
     if (poll && poll.voteCollector) {
         let sumVotes = poll.votes.reduce((prev, curr) => prev + curr);
 
-        poll.options.sort((a, b) => {
-            return poll.votes[poll.options.indexOf(b)] - poll.votes[poll.options.indexOf(b)];
-        });
-        poll.votes.sort((a, b) => {
-            return b - a;
+        let result = [];
+        for (let i = 0; i < poll.options.length; ++i) {
+            result.push({
+                option: poll.options[i],
+                votes: poll.votes[i]
+            });
+        }
+        result.sort((a, b) => {
+            return b.votes - a.votes;
         });
 
         let description = "";
         if (sumVotes >= 1) {
-            poll.options.forEach((option, index) => {
-                description += (index + 1) + ". **" + option + "** with **" + poll.votes[index] + "** votes\n";
+            result.forEach((r, index) => {
+                description += (index + 1) + ". **" + r.option + "** with **" + r.votes + "** votes\n";
             });
         } else {
             description = "No votes cast!";
@@ -105,7 +109,11 @@ const PollStatHandler = {
     handle(message, storage) {
         let embed = generatePollEmbed(message.channel, storage);
 
-        message.channel.send(embed);
+        if (embed) {
+            message.channel.send(embed);
+        } else {
+            message.channel.send("There is no active poll right now!");
+        }
     }
 };
 
@@ -165,19 +173,35 @@ const PollHandler = {
 
 Object.setPrototypeOf(PollHandler, ContentRegExpHandler);
 
+const MapPollHandler = {
+    MapPollHandler() {
+        this.ContentRegExpHandler(/^\.map\?/);
+    },
+    handle(message, storage) {
+        message.content = ".poll Which map?;Dust 2;Inferno;Mirage;Cache;Cobblestone;Overpass;Train;Nuke";
+        PollHandler.handle(message, storage);
+    }
+};
+
+Object.setPrototypeOf(MapPollHandler, ContentRegExpHandler);
+
 function registerHandlers(registerFunction) {
     const pollEndHandler = Object.create(PollEndHandler);
     pollEndHandler.PollEndHandler();
 
+    const pollStatHandler = Object.create(PollStatHandler);
+    pollStatHandler.PollStatHandler();
+    
     const pollHandler = Object.create(PollHandler);
     pollHandler.PollHandler();
 
-    const pollStatHandler = Object.create(PollStatHandler);
-    pollStatHandler.PollStatHandler();
+    const mapPollHandler = Object.create(MapPollHandler);
+    mapPollHandler.MapPollHandler();
 
     registerFunction(pollEndHandler);
-    registerFunction(pollHandler);
     registerFunction(pollStatHandler);
+    registerFunction(pollHandler);
+    registerFunction(mapPollHandler);
 }
 
 module.exports = {
