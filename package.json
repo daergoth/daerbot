@@ -11,7 +11,6 @@
     "ffmpeg-binaries": "^3.2.2-3",
     "glob": "^7.1.2",
     "node-opus": "^0.2.7",
-    "random-emoji": "^1.0.2",
     "require-all": "^2.2.0",
     "sodium": "^2.0.1",
     "uws": "^8.14.1",
@@ -22,13 +21,14 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js"
   },
   "keywords": [
+    "daerbot",
     "discord",
     "discord.js",
     "bot"
   ],
-  "author": "Istvan Lakatos",
+  "author": "István Lakatos",
   "license": "MIT"
 }
