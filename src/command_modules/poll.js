@@ -18,10 +18,10 @@ function pollCollect(storage, message) {
 
     let voteIndex = -1;
 
-    if (poll.options.includes(message.content)) {
-        voteIndex = poll.options.indexOf(message.content);
-    } else {
+    if (/^[\d]+$/.test(message.content)) {
         voteIndex = parseInt(message.content) - 1;
+    } else {
+        voteIndex = poll.options.indexOf(message.content);
     }
 
     poll.votes[voteIndex]++;
@@ -53,8 +53,8 @@ function generatePollEmbed(channel, storage) {
 
         let description = "";
         if (sumVotes >= 1) {
-            result.forEach((r, index) => {
-                description += (index + 1) + ". **" + r.option + "** with **" + r.votes + "** votes\n";
+            result.forEach((r) => {
+                description += "**" + (poll.options.indexOf(r.option) + 1) + "** - **" + r.option + "** with **" + r.votes + "** votes\n";
             });
         } else {
             description = "No votes cast!";
@@ -124,7 +124,16 @@ const PollHandler = {
         this.ContentRegExpHandler(/^\.poll/);
     },
     handle(message, storage) {
-        let params = message.content.split(";");
+        let params = message.content.split(";")
+            .map((p) => {
+                return p.trim();
+            })
+            .filter((p) => {
+                return p.length > 0;
+            })
+            .filter((p, index, self) => {
+                return self.indexOf(p) == index;
+            });
 
         if (params.length >= 3) {
             let vC = storage.getFromChannelLevel(message.channel, "poll.voteCollector");
@@ -191,7 +200,7 @@ function registerHandlers(registerFunction) {
 
     const pollStatHandler = Object.create(PollStatHandler);
     pollStatHandler.PollStatHandler();
-    
+
     const pollHandler = Object.create(PollHandler);
     pollHandler.PollHandler();
 
