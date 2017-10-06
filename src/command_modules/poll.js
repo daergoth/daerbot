@@ -1,5 +1,9 @@
 const Discord = require("discord.js");
+const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler");
+
+const CSGO_ICON_URL = configuration.getConfig("gather.csgo.image",
+    "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
 
 function pollFilter(storage, message) {
     let options = storage.getFromChannelLevel(message.channel, "poll.options");
@@ -66,6 +70,11 @@ function generatePollEmbed(channel, storage) {
             .setDescription(description)
             .setFooter(sumVotes + " total votes cast.")
             .setColor([0, 0, 255]);
+
+        if (storage.getFromChannelLevel(channel, "poll.isCSGO", true, false)) {
+            embed.setThumbnail(CSGO_ICON_URL);
+        }
+
         return embed;
     }
 
@@ -93,6 +102,7 @@ const PollEndHandler = {
                 options: [],
                 voteCollector: undefined,
                 votes: [],
+                isCSGO: false
             });
         } else {
             message.channel.send("There is no poll to end!");
@@ -158,6 +168,10 @@ const PollHandler = {
                 .setDescription(description)
                 .setColor([0, 0, 255]);
 
+            if (storage.getFromChannelLevel(message.channel, "poll.isCSGO", true, false)) {
+                embed.setThumbnail(CSGO_ICON_URL);
+            }
+
             message.channel.send(embed);
 
             let voteCollector = new Discord.MessageCollector(message.channel,
@@ -188,6 +202,11 @@ const MapPollHandler = {
     },
     handle(message, storage) {
         message.content = ".poll Which map?;Dust 2;Inferno;Mirage;Cache;Cobblestone;Overpass;Train;Nuke";
+
+        storage.saveOnChannelLevel(message.channel, "poll", {
+            isCSGO: true
+        });
+
         PollHandler.handle(message, storage);
     }
 };
