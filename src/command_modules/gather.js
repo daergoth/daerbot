@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const util = require("../util");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler.js");
 
@@ -138,11 +139,9 @@ const GatherHandler = {
         this.ContentRegExpHandler(/^\.gather/);
     },
     handle(message, storage) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
 
         if (params.length >= 2) {
-
-
             doGather(message, storage);
         } else {
             if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {

@@ -1,4 +1,5 @@
 const ytdl = require("ytdl-core");
+const util = require("../util");
 const ContentRegExpHandler = require("../content-regexp-handler.js");
 
 const YoutubePlayHandler = {
@@ -8,8 +9,7 @@ const YoutubePlayHandler = {
         this.ContentRegExpHandler(/^\.ytplay/);
     },
     handle(message, storage) {
-        let params = message.content.split(" ");
-        //let guildStorage = storage.getFromGuildLevel(message.guild).music;
+        let params = util.sanatizeCommandInput(message.content.split(" "));
 
         if (params.length >= 2) {
             let broadcast = storage.getFromGuildLevel(message.guild, "music.broadcast");
@@ -18,6 +18,7 @@ const YoutubePlayHandler = {
             }
 
             if (!ytdl.validateLink(params[1])) {
+                message.channel.send("Invalid YouTube link!");
                 return;
             }
 
@@ -169,10 +170,10 @@ const VolumeHandler = {
         this.ContentRegExpHandler(/^\.volume/);
     },
     handle(message, storage) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
 
         if (params.length >= 2) {
-            try {
+            if (/^[\d]+$/.test(params[1])) {
                 var volumePercent = parseInt(params[1]);
                 if (volumePercent > 0 && volumePercent <= 100) {
                     let broadcast = storage.getFromGuildLevel(message.guild, "music.broadcast");
@@ -185,8 +186,8 @@ const VolumeHandler = {
                         });
                     }
                 }
-            } catch (error) {
-                console.log(error);
+            } else {
+                message.channel.send("The volume should be between 0 and 100 percent!");
             }
         } else {
             message.channel.send("Missing volume percentage!");

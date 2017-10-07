@@ -1,5 +1,6 @@
 const fs = require("fs");
 const Discord = require("discord.js");
+const util = require("../util");
 const ContentRegExpHandler = require("../content-regexp-handler.js");
 
 const PlayingHandler = {
@@ -9,7 +10,7 @@ const PlayingHandler = {
         this.ContentRegExpHandler(/^\.playing/);
     },
     handle(message) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
 
         if (params.length >= 2) {
             message.client.user.setPresence({
@@ -30,7 +31,7 @@ const SayHandler = {
         this.ContentRegExpHandler(/^\.say/);
     },
     handle(message) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
         if (params.length >= 2) {
             message.channel.send(params.slice(1).join(" "));
             message.delete();

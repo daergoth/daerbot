@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const util = require("../util");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler");
 
@@ -106,9 +107,10 @@ const ChannelAlarmHandler = {
         this.ContentRegExpHandler(/^\.alarm/);
     },
     handle(message, storage) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
+
         if (params.length >= 2) {
-            try {
+            if (/^[\d]{4}$/i.test(params[1])) {
                 let alarmOffset = parseInt(configuration.getConfig("alarm.timezone", "0000"));
 
                 let alarmInput = parseInt(params[1]);
@@ -133,8 +135,8 @@ const ChannelAlarmHandler = {
                     timeout: alarmTimeout
                 });
                 storage.saveOnChannelLevel(message.channel, "alarms", channelAlarms);
-            } catch (error) {
-                console.log(error);
+            } else {
+                message.channel.send("Invalid time format! .alarm 2000 -> alarm at 20:00");
             }
         } else {
             message.channel.send("Need a time for the alarm! .alarm 2000 -> alarm at 20:00");
@@ -151,9 +153,10 @@ const AlarmHandler = {
         this.ContentRegExpHandler(/^\.selfalarm/);
     },
     handle(message, storage) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
         if (params.length >= 2) {
-            try {
+
+            if (/^[\d]{4}$/.test(params[1])) {
                 let alarmOffset = parseInt(configuration.getConfig("alarm.timezone", "0000"));
 
                 let alarmInput = parseInt(params[1]);
@@ -178,12 +181,11 @@ const AlarmHandler = {
                     timeout: alarmTimeout
                 });
                 storage.saveOnUserLevel(message.author, "alarms", userAlarms);
-
-            } catch (error) {
-                console.log(error);
+            } else {
+                message.channel.send("Invalid time format! .selfalarm 2000 -> alarm at 20:00");
             }
         } else {
-            message.channel.send("Need a time for the alarm! .alarm 2000 -> alarm at 20:00");
+            message.channel.send("Need a time for the alarm! .selfalarm 2000 -> alarm at 20:00");
         }
     }
 };
@@ -277,14 +279,14 @@ const SetTimezoneHandler = {
         this.ContentRegExpHandler(/^\.settimezone/);
     },
     handle(message) {
-        let params = message.content.split(" ");
+        let params = util.sanatizeCommandInput(message.content.split(" "));
 
         if (params.length >= 2) {
-            try {
+            if (/^[\d]{4}$/.test(params[1])) {
                 parseInt(params[1]);
                 configuration.setConfig("alarm.timezone", params[1]);
                 message.channel.send("Timezone set to " + params[1] + "!");
-            } catch (error) {
+            } else {
                 message.channel.send("Invalid timezone format! (0200 -> +02:00)");
             }
         }

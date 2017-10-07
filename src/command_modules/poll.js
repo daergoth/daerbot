@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const util = require("../util");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler");
 
@@ -134,13 +135,7 @@ const PollHandler = {
         this.ContentRegExpHandler(/^\.poll/);
     },
     handle(message, storage) {
-        let params = message.content.split(";")
-            .map((p) => {
-                return p.trim();
-            })
-            .filter((p) => {
-                return p.length > 0;
-            })
+        let params = util.sanatizeCommandInput(message.content.split(";"))
             .filter((p, index, self) => {
                 return self.indexOf(p) == index;
             });
