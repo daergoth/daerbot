@@ -18,25 +18,28 @@ const LogToggleHandler = {
         });
 
         let logListener = (oldMember, newMember) => {
-            let logChannelName = storage.getFromGuildLevel(message.guild, "log.channelName", true, 
-                configuration.getConfig("log.channelName", "log"));
-        
-            let logChannel = oldMember.guild.channels.find(c => c.name === logChannelName);
-        
-            if (!logChannel) {
-                oldMember.guild.createChannel(logChannelName, "text")
-                    .then(textChannel => {
-                        console.log("Created channel: ", textChannel.name);
-                        logChannel = textChannel;
-        
-                        handleStatusUpdate();
-                    })
-                    .catch(error => console.log("Error while creating log channel: " + error));
-            } else {
-                handleStatusUpdate();
+            let logStatus = storage.getFromGuildLevel(oldMember.guild, "log.status", true, true);
+            
+            if (logStatus) {
+                let logChannelName = storage.getFromGuildLevel(oldMember.guild, "log.channelName", true,
+                    configuration.getConfig("log.channelName", "log"));
+                let logChannel = oldMember.guild.channels.find(c => c.name === logChannelName);
+
+                if (!logChannel) {
+                    oldMember.guild.createChannel(logChannelName, "text")
+                        .then(textChannel => {
+                            console.log("Created channel: ", textChannel.name);
+                            logChannel = textChannel;
+
+                            handleStatusUpdate(logChannel);
+                        })
+                        .catch(error => console.log("Error while creating log channel: " + error));
+                } else {
+                    handleStatusUpdate(logChannel);
+                }
             }
-        
-            function handleStatusUpdate() {
+
+            function handleStatusUpdate(logChannel) {
                 if (!oldMember.voiceChannel) {
                     logChannel.send(`${oldMember.user} connected to ${newMember.voiceChannel}!`);
                 } else if (!newMember.voiceChannel) {
@@ -47,13 +50,14 @@ const LogToggleHandler = {
                     }
                 }
             }
-        
         };
 
         if (logStatus) {
-            message.guild.client.on("voiceStateUpdate", logListener);
+            if (!message.client.listeners("voiceStateUpdate").includes(logListener)) {
+                message.client.on("voiceStateUpdate", logListener);
+            }
         } else {
-            message.guild.client.removeListener("voiceStateUpdate", logListener);
+            message.client.removeListener("voiceStateUpdate", logListener);
         }
 
         message.channel.send(`Logging status: ${logStatus}`);
