@@ -113,8 +113,8 @@ function doGather(message, storage) {
     storage.saveOnChannelLevel(message.channel, "gather", {
         starterMessage: message,
         isGathering: true,
-        // 5 min timeout to auto-stop gathering
-        endTimeout: setTimeout(clearGathering, 300000, message, storage),
+        // 10 min timeout to auto-stop gathering
+        endTimeout: setTimeout(clearGathering, 1000 * 60 * 10, message, storage),
         joinListener: listener
     });
 
