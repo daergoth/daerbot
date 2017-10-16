@@ -1,17 +1,21 @@
 const Discord = require("discord.js");
+
 const Router = require("./router");
 const Storage = require("./storage");
 const Configuration = require("./configuration");
+const RestLoader = require("./rest-loader");
 
 const client = new Discord.Client();
 
 const commandRouter = Object.create(Router);
 const storage = Object.create(Storage);
+const restLoader = Object.create(RestLoader);
 
 Configuration.reloadConfiguration()
     .then(function configurationLoaded() {
         commandRouter.Router();
         storage.Storage();
+        restLoader.RestLoader(3000);
 
         return commandRouter.reloadCommandModules();
     })
@@ -99,11 +103,16 @@ Configuration.reloadConfiguration()
             }
         });
 
-        client.login(process.env.BOT_TOKEN);
+        client.login(process.env.BOT_TOKEN)
+            .then(function discordBotStarted() {
+                restLoader.load(client)
+                    .then(function endpointsLoaded() {
+                        restLoader.start();
+                    });
+            });
     })
     .catch(function failure(err) {
         console.log("Failure during setup:", err);
 
         console.log("Shutting down...");
     });
-
