@@ -1,1 +1,5 @@
+repository: daergoth/daerbot
+
+# Build settings
+markdown: kramdown
 theme: jekyll-theme-slate
