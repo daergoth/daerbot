@@ -1,0 +1,48 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+#project_tagline {
+    width: auto;
+
+    display: inline-block;
+}
+
+span.dashboard-row {
+    margin-left: 10px;
+}
+
+span.dashboard-label {
+    width: 100px;
+    font-weight: bold;
+
+    display: inline-block;
+}
+
+#bot-status {
+    margin: 10px 0;
+
+    display: inline-block;
+
+    position: absolute;
+    right: 0;
+}
+
+#bot-status span.status-label {
+    color: white;
+    text-shadow: #111 0px 0px 10px;
+
+    font-size: 24px;
+    font-weight: 300;
+}
+
+#bot-status div.status-icon {
+    width: 10px;
+    height: 10px;
+
+    //border: 1px solid rgb(168, 168, 168);
+    border-radius: 10px;
+
+    display: inline-block;
+}

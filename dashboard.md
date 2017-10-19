@@ -1,5 +1,6 @@
 # Dashboard
 
-<div id="dashboard"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="js/heartbeat.js"></script>
+<div id="dashboard-widget">
+    
+</div>
+<script src="{{ '/assets/js/heartbeat.js' | relative_url }}"></script>
