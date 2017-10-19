@@ -14,6 +14,10 @@ const RestLoader = {
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
+
+        this.router = express.Router();
+
+        this.app.use("/api", this.router);
     },
     load(discordClient) {
         return new Promise(function (resolve, reject) {
@@ -47,7 +51,7 @@ const RestLoader = {
             return;
         }
 
-        endpoint.registerEndpoints(this.app, discordClient);
+        endpoint.registerEndpoints(this.router, discordClient);
 
         console.log("Loaded endpoint:", endpointPath);
     },

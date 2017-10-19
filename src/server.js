@@ -15,7 +15,7 @@ Configuration.reloadConfiguration()
     .then(function configurationLoaded() {
         commandRouter.Router();
         storage.Storage();
-        restLoader.RestLoader(3000);
+        restLoader.RestLoader(process.env.PORT);
 
         return commandRouter.reloadCommandModules();
     })
