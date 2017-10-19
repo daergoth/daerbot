@@ -1,7 +1,7 @@
 $(function () {
     let dashboard = $("#dashboard-widget");
 
-    $.getJSON("https://daerbot.herokuapp.com:3000/heartbeat", function (data) {
+    $.getJSON("https://daerbot.herokuapp.com/api/heartbeat", function (data) {
         let currentDomElement = undefined;
         for (let property in data) {
             let propertyName = property.replace(/^./, (substring) => {

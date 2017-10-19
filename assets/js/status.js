@@ -4,7 +4,7 @@ $(function () {
     }
 
     function doGet() {
-        $.getJSON("https://daerbot.herokuapp.com:3000/heartbeat", function (data) {
+        $.getJSON("https://daerbot.herokuapp.com/api/heartbeat", function (data) {
             updateIcon(data.status);
         })
         .fail(function() {
