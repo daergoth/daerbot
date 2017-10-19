@@ -10,7 +10,7 @@ To invite the bot the to your server just click this link:
 [Invite DaerBot to your Discord server](https://discordapp.com/oauth2/authorize?client_id=360146475033821184&scope=bot&permissions=2146696311)  
 (Disabled for now...)
 
-## [Commands](COMMANDS.md)
+## [Commands](commands.md)
 
 ## Install & Run
 ```
