@@ -5,8 +5,7 @@ const GetHeartbeatEndpoint = {
     handle(discordClient, req, res) {
         res
             .status(200)
-            .type("json")
-            .send(
+            .json(
                 { 
                     status: discordClient.status,
                     ping: discordClient.ping,
