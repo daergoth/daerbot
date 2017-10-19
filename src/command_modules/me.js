@@ -1,4 +1,3 @@
-const fs = require("fs");
 const Discord = require("discord.js");
 const util = require("../util");
 const ContentRegExpHandler = require("../content-regexp-handler.js");
@@ -52,8 +51,8 @@ const HelpHandler = {
             .then(dm => {
                 let embed = new Discord.RichEmbed()
                     .setTitle("Help")
-                    .setDescription(fs.readFileSync("./COMMANDS.md"))
-                    .setAuthor("DaerBot", message.client.user.avatarUrl);
+                    .setDescription("To check what can DaerBot do, click this:\n[https://daergoth.github.io/daerbot/commands.html](https://daergoth.github.io/daerbot/commands.html)")
+                    .setAuthor(message.client.user.username, message.client.user.avatarUrl);
                 dm.send(embed);
             });
     }
