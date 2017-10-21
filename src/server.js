@@ -1,3 +1,4 @@
+const http = require("http");
 const Discord = require("discord.js");
 
 const Router = require("./router");
@@ -11,11 +12,13 @@ const commandRouter = Object.create(Router);
 const storage = Object.create(Storage);
 const restLoader = Object.create(RestLoader);
 
+var herokuSleepDisabler;
+
 Configuration.reloadConfiguration()
     .then(function configurationLoaded() {
         commandRouter.Router();
         storage.Storage();
-        restLoader.RestLoader(process.env.PORT);
+        restLoader.RestLoader(process.env.PORT ? process.env.PORT : 3000);
 
         return commandRouter.reloadCommandModules();
     })
@@ -108,6 +111,15 @@ Configuration.reloadConfiguration()
                 restLoader.load(client)
                     .then(function endpointsLoaded() {
                         restLoader.start();
+                    })
+                    .then(function restStarted() {
+                        if (process.env.HEROKU_ENV) {
+                            // Workaround for Heroku's dyno auto-sleep feature
+                            // If the dyno under the bot sleeps, the bot will be offline
+                            herokuSleepDisabler = setInterval(function() {
+                                http.get("http://daerbot.herokuapp.com");
+                            }, 1000 * 60 * 20); // every 20 minutes
+                        }
                     });
             });
     })
@@ -115,4 +127,6 @@ Configuration.reloadConfiguration()
         console.log("Failure during setup:", err);
 
         console.log("Shutting down...");
+
+        clearInterval(herokuSleepDisabler);
     });
