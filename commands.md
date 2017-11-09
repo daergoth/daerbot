@@ -12,12 +12,17 @@ Debug
 * `.poke` - the bot replies with "Leave me alone, please."
 * `.reload` - reload (Authorized Role needed)
 
-Game
+Gather
 * `.gather [question]` - if `question` is specified starts team gathering with the `question` as the title, otherwise shows the current standing
 * `.gatherend` - stops team gathering
 * `.csgo? [question]` - like `.gather`, but with CS:GO default values
 * `.lol? [question]` - like `.gather`, but with LoL default values
 * `.dota2? [question]` - like `.gather`, but with Dota 2 default values
+* `.sc2? [question]` - like `.gather`, but with StarCraft 2 default values
+* `.pubg? [question]` - like `.gather`, but with PlayerUnknown's Battlegrounds default values
+* `.rl? [question]` - like `.gather`, but with Rocket League default values
+* `.wow? [question]` - like `.gather`, but with WoW default values
+* `.film? [question]` - like `.gather`, but with film watching default values
 
 Logging
 * `.logstatus` - shows if voice channel activity logging is on/off (Authorized Role needed)
