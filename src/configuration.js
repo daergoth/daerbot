@@ -31,7 +31,6 @@ function getConfig(id, defaultValue) {
     if (Object.prototype.hasOwnProperty.call(current, path[path.length - 1])) {
         return current[path[path.length - 1]];
     } else {
-        console.log("default");
         return defaultValue;
     }
 }

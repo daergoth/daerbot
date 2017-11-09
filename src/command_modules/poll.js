@@ -193,7 +193,7 @@ Object.setPrototypeOf(PollHandler, ContentRegExpHandler);
 
 const MapPollHandler = {
     MapPollHandler() {
-        this.ContentRegExpHandler(/^\.map\?/);
+        this.ContentRegExpHandler(/^\.csgomap\?/);
     },
     handle(message, storage) {
         message.content = ".poll Which map?;Dust 2;Inferno;Mirage;Cache;Cobblestone;Overpass;Train;Nuke";

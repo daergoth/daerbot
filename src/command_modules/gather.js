@@ -181,12 +181,16 @@ Object.setPrototypeOf(LolHandler, ContentRegExpHandler);
 */
 
 const CustomGameGatherHandler = {
-    REGEXP: /^\.(.+)\?/,
     CustomGameGatherHandler() {
-        this.ContentRegExpHandler(this.REGEXP);
+        let commandKeywords = Object.keys(configuration.getConfig("gather", Object.create(null))); 
+        let regexpString = "^\\.(" + commandKeywords.join("|") + ")\\?";
+
+        this.regexp = new RegExp(regexpString);
+
+        this.ContentRegExpHandler(this.regexp);
     },
     handle(message, storage) {
-        let keyword = this.REGEXP.exec(message)[1];
+        let keyword = this.regexp.exec(message)[1];
         if (configuration.getConfig("gather." + keyword, undefined) != undefined) {
             if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
                 sendGatherStatus(message, storage);
