@@ -3,7 +3,7 @@ const util = require("../util");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler");
 
-const CSGO_ICON_URL = configuration.getConfig("gather.csgo.image",
+const CSGO_ICON_URL = configuration.getConfig("gather.csgo.thumbnail",
     "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
 
 function pollFilter(storage, message) {
