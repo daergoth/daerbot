@@ -17,6 +17,7 @@ Game
 * `.gatherend` - stops team gathering
 * `.csgo? [question]` - like `.gather`, but with CS:GO default values
 * `.lol? [question]` - like `.gather`, but with LoL default values
+* `.dota2? [question]` - like `.gather`, but with Dota 2 default values
 
 Logging
 * `.logstatus` - shows if voice channel activity logging is on/off (Authorized Role needed)
@@ -38,4 +39,4 @@ Poll
 * `.poll question;option;option[;option...]` - starts a poll with the `question` and all the `options`
 * `.pollstat` - shows the current standing of the poll, if there is one
 * `.pollend` - closes the current poll and shows the final result
-* `.map?` - starts a poll with CS:GO active map pool defaults
+* `.csgomap?` - starts a poll with CS:GO active map pool defaults
