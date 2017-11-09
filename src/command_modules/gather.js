@@ -39,7 +39,7 @@ function sendGatherStatus(message, storage) {
     if (!currentRichEmbed) {
         let title = "";
         if (message.content.split(" ").length > 1) {
-            title = message.content.split(" ")[1];
+            title = message.content.split(" ").slice(1).join(" ");
         } else {
             if (storage.getFromChannelLevel(message.channel, "gather.isCSGO")) {
                 title = DEFAULT_CSGO_TITLE;
@@ -101,8 +101,7 @@ function clearGathering(message, storage) {
         endTimeout: undefined,
         playerList: [],
         gatherMessages: [],
-        isCSGO: false,
-        isLoL: false,
+        customGame: "",
         isGathering: false
     });
 }
@@ -140,12 +139,12 @@ const GatherHandler = {
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
-
-        if (params.length >= 2) {
-            doGather(message, storage);
+        
+        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+            sendGatherStatus(message, storage);
         } else {
-            if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
-                sendGatherStatus(message, storage);
+            if (params.length >= 2) {
+                doGather(message, storage);
             } else {
                 message.channel.send("Invalid command! .gather Question?");
             }
@@ -155,6 +154,7 @@ const GatherHandler = {
 
 Object.setPrototypeOf(GatherHandler, ContentRegExpHandler);
 
+/*
 const CsgoHandler = {
     CsgoHandler() {
         this.ContentRegExpHandler(/^\.csgo\?/);
@@ -192,6 +192,27 @@ const LolHandler = {
 };
 
 Object.setPrototypeOf(LolHandler, ContentRegExpHandler);
+*/
+
+const CustomGameGatherHandler = {
+    REGEXP: /^\.(.+)\?/,
+    CustomGameGatherHandler() {
+        this.ContentRegExpHandler(this.REGEXP);
+    },
+    handle(message, storage) {
+        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+            sendGatherStatus(message, storage);
+        } else {
+            storage.saveOnChannelLevel(message.channel, "gather", {
+                customGame: this.REGEXP.exec(message)[0]
+            });
+
+            doGather(message, storage);
+        }
+    }
+};
+
+Object.setPrototypeOf(CustomGameGatherHandler, ContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const gatherEndHandler = Object.create(GatherEndHandler);
@@ -200,16 +221,21 @@ function registerHandlers(registerFunction) {
     const gatherHandler = Object.create(GatherHandler);
     gatherHandler.GatherHandler();
 
+    /*
     const csgoHandler = Object.create(CsgoHandler);
     csgoHandler.CsgoHandler();
 
     const lolHandler = Object.create(LolHandler);
     lolHandler.LolHandler();
+    */
 
     registerFunction(gatherEndHandler);
     registerFunction(gatherHandler);
+
+    /*
     registerFunction(csgoHandler);
     registerFunction(lolHandler);
+    */
 }
 
 module.exports = {
