@@ -3,13 +3,6 @@ const util = require("../util");
 const configuration = require("../configuration");
 const ContentRegExpHandler = require("../content-regexp-handler.js");
 
-const CSGO_ICON_URL = configuration.getConfig("gather.csgo.image",
-    "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
-const LOL_ICON_URL = configuration.getConfig("gather.lol.image",
-    "http://vignette1.wikia.nocookie.net/leagueoflegends/images/8/86/League_of_legends_logo_transparent.png");
-const DEFAULT_CSGO_TITLE = configuration.getConfig("gather.csgo.title", "CS:GO Matchmaking?");
-const DEFAULT_LOL_TITLE = configuration.getConfig("gather.lol.title", "LoL Ranked?");
-
 var joinListener = function (storage, message) {
     let starterMessage = storage.getFromChannelLevel(message.channel, "gather.starterMessage");
     let playerList = storage.getFromChannelLevel(message.channel, "gather.playerList", true, []);
@@ -19,13 +12,13 @@ var joinListener = function (storage, message) {
     if (starterMessage && message.channel === starterMessage.channel) {
         if (message.content === "+" && !playerList.includes(message.author)) {
             playerList.push(message.author);
-    
+
             currentRichEmbed.addField("\u200B", playerList.length + " - " + message.author);
-    
+
             gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
-    
+
             message.delete(2000);
-    
+
             storage.saveOnChannelLevel(message.channel, "gather", {
                 playerList: playerList,
                 currentRichEmbed: currentRichEmbed
@@ -37,28 +30,21 @@ var joinListener = function (storage, message) {
 function sendGatherStatus(message, storage) {
     let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
     if (!currentRichEmbed) {
-        let title = "";
-        if (message.content.split(" ").length > 1) {
-            title = message.content.split(" ")[1];
-        } else {
-            if (storage.getFromChannelLevel(message.channel, "gather.isCSGO")) {
-                title = DEFAULT_CSGO_TITLE;
-            } else if (storage.getFromChannelLevel(message.channel, "gather.isLoL")) {
-                title = DEFAULT_LOL_TITLE;
-            }
-        }
-
         currentRichEmbed = new Discord.RichEmbed()
             .setAuthor(storage.getFromChannelLevel(message.channel, "gather.starterMessage.author.username"),
                 storage.getFromChannelLevel(message.channel, "gather.starterMessage.author.avatarURL"))
-            .setTitle(title)
             .setDescription("Type '+' to join this gathering!")
             .setColor([255, 0, 0]);
 
-        if (storage.getFromChannelLevel(message.channel, "gather.isCSGO")) {
-            currentRichEmbed.setThumbnail(CSGO_ICON_URL);
-        } else if (storage.getFromChannelLevel(message.channel, "gather.isLoL")) {
-            currentRichEmbed.setThumbnail(LOL_ICON_URL);
+        let customGameKeyword = storage.getFromChannelLevel(message.channel, "gather.customGame");
+        let customGameObject = configuration.getConfig("gather." + customGameKeyword, undefined);
+        if (customGameObject != undefined) {
+            currentRichEmbed.setTitle(customGameObject.title);
+            currentRichEmbed.setThumbnail(customGameObject.thumbnail);
+        }
+
+        if (message.content.split(" ").length > 1) {
+            currentRichEmbed.setTitle(message.content.split(" ").slice(1).join(" "));
         }
 
         storage.saveOnChannelLevel(message.channel, "gather", {
@@ -101,8 +87,7 @@ function clearGathering(message, storage) {
         endTimeout: undefined,
         playerList: [],
         gatherMessages: [],
-        isCSGO: false,
-        isLoL: false,
+        customGame: "",
         isGathering: false
     });
 }
@@ -141,11 +126,11 @@ const GatherHandler = {
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
 
-        if (params.length >= 2) {
-            doGather(message, storage);
+        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+            sendGatherStatus(message, storage);
         } else {
-            if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
-                sendGatherStatus(message, storage);
+            if (params.length >= 2) {
+                doGather(message, storage);
             } else {
                 message.channel.send("Invalid command! .gather Question?");
             }
@@ -155,6 +140,7 @@ const GatherHandler = {
 
 Object.setPrototypeOf(GatherHandler, ContentRegExpHandler);
 
+/*
 const CsgoHandler = {
     CsgoHandler() {
         this.ContentRegExpHandler(/^\.csgo\?/);
@@ -192,6 +178,34 @@ const LolHandler = {
 };
 
 Object.setPrototypeOf(LolHandler, ContentRegExpHandler);
+*/
+
+const CustomGameGatherHandler = {
+    CustomGameGatherHandler() {
+        let commandKeywords = Object.keys(configuration.getConfig("gather", Object.create(null))); 
+        let regexpString = "^\\.(" + commandKeywords.join("|") + ")\\?";
+
+        this.regexp = new RegExp(regexpString);
+
+        this.ContentRegExpHandler(this.regexp);
+    },
+    handle(message, storage) {
+        let keyword = this.regexp.exec(message)[1];
+        if (configuration.getConfig("gather." + keyword, undefined) != undefined) {
+            if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
+                sendGatherStatus(message, storage);
+            } else {
+                storage.saveOnChannelLevel(message.channel, "gather", {
+                    customGame: keyword
+                });
+
+                doGather(message, storage);
+            }
+        }
+    }
+};
+
+Object.setPrototypeOf(CustomGameGatherHandler, ContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const gatherEndHandler = Object.create(GatherEndHandler);
@@ -200,16 +214,25 @@ function registerHandlers(registerFunction) {
     const gatherHandler = Object.create(GatherHandler);
     gatherHandler.GatherHandler();
 
+    const customGameGatherHandler = Object.create(CustomGameGatherHandler);
+    customGameGatherHandler.CustomGameGatherHandler();
+
+    /*
     const csgoHandler = Object.create(CsgoHandler);
     csgoHandler.CsgoHandler();
 
     const lolHandler = Object.create(LolHandler);
     lolHandler.LolHandler();
+    */
 
     registerFunction(gatherEndHandler);
     registerFunction(gatherHandler);
+    registerFunction(customGameGatherHandler);
+
+    /*
     registerFunction(csgoHandler);
     registerFunction(lolHandler);
+    */
 }
 
 module.exports = {
