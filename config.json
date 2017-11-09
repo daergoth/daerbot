@@ -17,6 +17,26 @@
         "dota2": {
             "thumbnail": "http://cdn.dota2.com/apps/dota2/images/nav/logo.png",
             "title": "Dota 2?"
+        },
+        "sc2": {
+            "thumbnail": "https://static.starcraft2.com/dist/images/global/logos/img-sc2-logo--large.png",
+            "title": "StarCraft 2 Ranked?"
+        },
+        "pubg": {
+            "thumbnail": "http://cdn.akamai.steamstatic.com/steam/apps/578080/capsule_184x69.jpg",
+            "title": "PlayerUnknown's Battlegrounds?"
+        },
+        "rl": {
+            "thumbnail": "http://cdn.edgecast.steamstatic.com/steam/apps/252950/header.jpg",
+            "title": "Rocket League?"
+        },
+        "wow": {
+            "thumbnail": "https://worldofwarcraft.akamaized.net/static/components/Logo/Logo-wow.png",
+            "title": "World of Warcraft?"
+        },
+        "film": {
+            "thumbnail": "",
+            "title": "Watching a film, anyone?"
         }
     }
 }
