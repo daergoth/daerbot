@@ -16,7 +16,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (target && Object.prototype.hasOwnProperty.call(target, p)) {
+            if (target && p in target) {
                 target = target[p];
 
                 if (i == path.length - 1) {
@@ -41,7 +41,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (result && Object.prototype.hasOwnProperty.call(result, p)) {
+            if (result && p in result) {
                 result = result[p];
             } else {
                 if (isCreate) {
@@ -68,7 +68,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (target && Object.prototype.hasOwnProperty.call(target, p)) {
+            if (target && p in target) {
                 target = target[p];
 
                 if (i == path.length - 1) {
@@ -93,7 +93,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (result && Object.prototype.hasOwnProperty.call(result, p)) {
+            if (result && p in result) {
                 result = result[p];
             } else {
                 if (isCreate) {
@@ -120,7 +120,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (target && Object.prototype.hasOwnProperty.call(target, p)) {
+            if (target && p in target) {
                 target = target[p];
 
                 if (i == path.length - 1) {
@@ -145,7 +145,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (result && Object.prototype.hasOwnProperty.call(result, p)) {
+            if (result && p in result) {
                 result = result[p];
             } else {
                 if (isCreate) {
@@ -172,7 +172,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (target && Object.prototype.hasOwnProperty.call(target, p)) {
+            if (target && p in target) {
                 target = target[p];
 
                 if (i == path.length - 1) {
@@ -197,7 +197,7 @@ const Storage = {
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
-            if (result && Object.prototype.hasOwnProperty.call(result, p)) {
+            if (result && p in result) {
                 result = result[p];
             } else {
                 if (isCreate) {

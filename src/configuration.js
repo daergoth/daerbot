@@ -21,14 +21,14 @@ function getConfig(id, defaultValue) {
     let path = id.split(".");
     let current = config;
     for (let i = 0; i < path.length - 1; ++i) {
-        if (!Object.prototype.hasOwnProperty.call(current, path[i])) {
+        if (!(path[i] in current)) {
             current[path[i]] = Object.create(null);
         }
 
         current = current[path[i]];
     } 
 
-    if (Object.prototype.hasOwnProperty.call(current, path[path.length - 1])) {
+    if (path[path.length - 1] in current) {
         return current[path[path.length - 1]];
     } else {
         return defaultValue;
@@ -39,7 +39,7 @@ function setConfig(id, value) {
     let path = id.split(".");
     let current = config;
     for (let i = 0; i < path.length - 1; ++i) {
-        if (!Object.prototype.hasOwnProperty.call(current, path[i])) {
+        if (!(path[i] in current)) {
             current[path[i]] = Object.create(null);
         }
 
