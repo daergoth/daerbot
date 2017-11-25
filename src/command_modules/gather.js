@@ -10,10 +10,17 @@ var joinListener = function (storage, message) {
     let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
 
     if (starterMessage && message.channel === starterMessage.channel) {
-        if (message.content === "+" && !playerList.includes(message.author)) {
+        if (message.content.startsWith("+") && !playerList.includes(message.author)) {
             playerList.push(message.author);
 
-            currentRichEmbed.addField("\u200B", playerList.length + " - " + message.author);
+            let note = util.sanatizeCommandInput(message.content.split(" ").slice(1)).join(" ");
+
+            let m = `${playerList.length} - ${message.author}`;
+            if (note) {
+                m += `: ${note}`;
+            }
+
+            currentRichEmbed.addField("\u200B", m);
 
             gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
 
@@ -77,6 +84,7 @@ function clearGathering(message, storage) {
     let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
 
     currentRichEmbed.setFooter("ENDED!");
+    currentRichEmbed.setDescription("");
     message.channel.send(currentRichEmbed);
     storage.getFromChannelLevel(message.channel, "gather.gatherMessages")
         .forEach(gM => gM.edit(currentRichEmbed));
