@@ -117,7 +117,7 @@ Configuration.reloadConfiguration()
                             // Workaround for Heroku's dyno auto-sleep feature
                             // If the dyno under the bot sleeps, the bot will be offline
                             herokuSleepDisabler = setInterval(function() {
-                                http.get("http://daerbot.herokuapp.com");
+                                http.get(process.env.HEROKU_ENV);
                             }, 1000 * 60 * 20); // every 20 minutes
                         }
                     });
@@ -128,5 +128,7 @@ Configuration.reloadConfiguration()
 
         console.log("Shutting down...");
 
-        clearInterval(herokuSleepDisabler);
+        if (process.env.HEROKU_ENV) {
+            clearInterval(herokuSleepDisabler);
+        }
     });
