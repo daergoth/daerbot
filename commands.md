@@ -15,6 +15,7 @@ Debug
 Gather
 * `.gather [question]` - if `question` is specified starts team gathering with the `question` as the title, otherwise shows the current standing
 * `.gatherend` - stops team gathering
+* `+ [note]` - joins a gathering with the optional `note` showing beside your name, (only available if there is a gathering)
 * `.csgo? [question]` - like `.gather`, but with CS:GO default values
 * `.lol? [question]` - like `.gather`, but with LoL default values
 * `.dota2? [question]` - like `.gather`, but with Dota 2 default values
