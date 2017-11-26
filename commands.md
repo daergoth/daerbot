@@ -24,6 +24,10 @@ Gather
 * `.rl? [question]` - like `.gather`, but with Rocket League default values
 * `.wow? [question]` - like `.gather`, but with WoW default values
 * `.film? [question]` - like `.gather`, but with film watching default values
+* `.battlerite? [question]` - like `.gather`, but with Battlerite default values
+* `.payday? [question]` - like `.gather`, but with Payday 2 default values
+* `.tabletop? [question]`- like `.gather`, but with Tabletop Simulator default values
+* `.r6s? [question]` - like `.gather`, but with Rainbow Six Siege default values
 
 Logging
 * `.logstatus` - shows if voice channel activity logging is on/off (Authorized Role needed)
