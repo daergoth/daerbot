@@ -37,6 +37,22 @@
         "film": {
             "thumbnail": "",
             "title": "Watching a film, anyone?"
+        },
+        "battlerite": {
+            "thumbnail": "https://www.battlerite.com/logos/logo-big.png",
+            "title": "Battlerite?"
+        },
+        "tabletop": {
+            "thumbnail": "http://cdn.akamai.steamstatic.com/steam/apps/286160/header.jpg",
+            "title": "Tabletop Simulator?"
+        },
+        "r6s": {
+            "thumbnail": "https://ubistatic19-a.akamaihd.net/resource/en-us/game/rainbow6/siege/R6_agegate_logo.png",
+            "title": "Rainbow Six Siege?"
+        },
+        "payday": {
+            "thumbnail": "http://cdn.akamai.steamstatic.com/steam/apps/218620/header.jpg",
+            "title": "Payday 2?"
         }
     }
 }
