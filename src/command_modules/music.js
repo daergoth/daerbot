@@ -1,12 +1,12 @@
 const ytdl = require("ytdl-core");
 const util = require("../util");
-const ContentRegExpHandler = require("../content-regexp-handler.js");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 const YoutubePlayHandler = {
     YoutubePlayHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.ytplay/);
+        this.PrefixedContentRegExpHandler(/ytplay/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -69,13 +69,13 @@ const YoutubePlayHandler = {
     }
 };
 
-Object.setPrototypeOf(YoutubePlayHandler, ContentRegExpHandler);
+Object.setPrototypeOf(YoutubePlayHandler, PrefixedContentRegExpHandler);
 
 const YoutubePauseHandler = {
     YoutubePauseHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.ytpause/);
+        this.PrefixedContentRegExpHandler(/ytpause/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -93,13 +93,13 @@ const YoutubePauseHandler = {
     }
 };
 
-Object.setPrototypeOf(YoutubePauseHandler, ContentRegExpHandler);
+Object.setPrototypeOf(YoutubePauseHandler, PrefixedContentRegExpHandler);
 
 const YoutubeResumeHandler = {
     YoutubeResumeHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.ytresume/);
+        this.PrefixedContentRegExpHandler(/ytresume/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -117,13 +117,13 @@ const YoutubeResumeHandler = {
     }
 };
 
-Object.setPrototypeOf(YoutubeResumeHandler, ContentRegExpHandler);
+Object.setPrototypeOf(YoutubeResumeHandler, PrefixedContentRegExpHandler);
 
 const YoutubeStopHandler = {
     YoutubeStopHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.ytstop/);
+        this.PrefixedContentRegExpHandler(/ytstop/);
     },
     handle(message, storage) {
         let dispatcher = storage.getFromGuildLevel(message.guild, "music.dispatcher");
@@ -161,13 +161,13 @@ const YoutubeStopHandler = {
     }
 };
 
-Object.setPrototypeOf(YoutubeStopHandler, ContentRegExpHandler);
+Object.setPrototypeOf(YoutubeStopHandler, PrefixedContentRegExpHandler);
 
 const VolumeHandler = {
     VolumeHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.volume/);
+        this.PrefixedContentRegExpHandler(/volume/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -195,7 +195,7 @@ const VolumeHandler = {
     }
 };
 
-Object.setPrototypeOf(VolumeHandler, ContentRegExpHandler);
+Object.setPrototypeOf(VolumeHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const youtubePlayHandler = Object.create(YoutubePlayHandler);

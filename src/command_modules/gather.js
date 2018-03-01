@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const util = require("../util");
 const configuration = require("../configuration");
-const ContentRegExpHandler = require("../content-regexp-handler.js");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 var joinListener = function (storage, message) {
     let starterMessage = storage.getFromChannelLevel(message.channel, "gather.starterMessage");
@@ -118,18 +118,18 @@ function doGather(message, storage) {
 
 const GatherEndHandler = {
     GatherEndHandler() {
-        this.ContentRegExpHandler(/^\.gatherend/);
+        this.PrefixedContentRegExpHandler(/gatherend/);
     },
     handle(message, storage) {
         clearGathering(message, storage);
     }
 };
 
-Object.setPrototypeOf(GatherEndHandler, ContentRegExpHandler);
+Object.setPrototypeOf(GatherEndHandler, PrefixedContentRegExpHandler);
 
 const GatherHandler = {
     GatherHandler() {
-        this.ContentRegExpHandler(/^\.gather/);
+        this.PrefixedContentRegExpHandler(/gather/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -146,56 +146,16 @@ const GatherHandler = {
     }
 };
 
-Object.setPrototypeOf(GatherHandler, ContentRegExpHandler);
-
-/*
-const CsgoHandler = {
-    CsgoHandler() {
-        this.ContentRegExpHandler(/^\.csgo\?/);
-    },
-    handle(message, storage) {
-        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
-            sendGatherStatus(message, storage);
-        } else {
-            storage.saveOnChannelLevel(message.channel, "gather", {
-                isCSGO: true
-            });
-
-            doGather(message, storage);
-        }
-    }
-};
-
-Object.setPrototypeOf(CsgoHandler, ContentRegExpHandler);
-
-const LolHandler = {
-    LolHandler() {
-        this.ContentRegExpHandler(/^\.lol\?/);
-    },
-    handle(message, storage) {
-        if (storage.getFromChannelLevel(message.channel, "gather.isGathering")) {
-            sendGatherStatus(message, storage);
-        } else {
-            storage.saveOnChannelLevel(message.channel, "gather", {
-                isLoL: true
-            });
-
-            doGather(message, storage);
-        }
-    }
-};
-
-Object.setPrototypeOf(LolHandler, ContentRegExpHandler);
-*/
+Object.setPrototypeOf(GatherHandler, PrefixedContentRegExpHandler);
 
 const CustomGameGatherHandler = {
     CustomGameGatherHandler() {
         let commandKeywords = Object.keys(configuration.getConfig("gather", Object.create(null))); 
-        let regexpString = "^\\.(" + commandKeywords.join("|") + ")\\?";
+        let regexpString = "(" + commandKeywords.join("|") + ")\\?";
 
         this.regexp = new RegExp(regexpString);
 
-        this.ContentRegExpHandler(this.regexp);
+        this.PrefixedContentRegExpHandler(this.regexp);
     },
     handle(message, storage) {
         let keyword = this.regexp.exec(message)[1];
@@ -213,7 +173,7 @@ const CustomGameGatherHandler = {
     }
 };
 
-Object.setPrototypeOf(CustomGameGatherHandler, ContentRegExpHandler);
+Object.setPrototypeOf(CustomGameGatherHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const gatherEndHandler = Object.create(GatherEndHandler);
@@ -225,22 +185,9 @@ function registerHandlers(registerFunction) {
     const customGameGatherHandler = Object.create(CustomGameGatherHandler);
     customGameGatherHandler.CustomGameGatherHandler();
 
-    /*
-    const csgoHandler = Object.create(CsgoHandler);
-    csgoHandler.CsgoHandler();
-
-    const lolHandler = Object.create(LolHandler);
-    lolHandler.LolHandler();
-    */
-
     registerFunction(gatherEndHandler);
     registerFunction(gatherHandler);
     registerFunction(customGameGatherHandler);
-
-    /*
-    registerFunction(csgoHandler);
-    registerFunction(lolHandler);
-    */
 }
 
 module.exports = {

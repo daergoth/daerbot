@@ -1,33 +1,33 @@
-const ContentRegExpHandler = require("../content-regexp-handler.js");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 const PokeHandler = {
     PokeHandler() {
-        this.ContentRegExpHandler(/^\.poke/);
+        this.PrefixedContentRegExpHandler(/poke/);
     },
     handle(message) {
         message.channel.send("Leave me alone, please.");
     }
 };
 
-Object.setPrototypeOf(PokeHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PokeHandler, PrefixedContentRegExpHandler);
 
 const PingHandler = {
     PingHandler() {
-        this.ContentRegExpHandler(/^\.ping/);
+        this.PrefixedContentRegExpHandler(/ping/);
     },
     handle(message) {
         message.channel.send("Pong.");
     }
 };
 
-Object.setPrototypeOf(PingHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PingHandler, PrefixedContentRegExpHandler);
 
 const ReloadHandler = {
     ReloadHandler(router) {
         this.secure = true;
         this.router = router;
 
-        this.ContentRegExpHandler(/^\.reload/);
+        this.PrefixedContentRegExpHandler(/reload/);
     },
     handle(message, storage) {
         storage.persist()
@@ -49,7 +49,7 @@ const ReloadHandler = {
     }
 };
 
-Object.setPrototypeOf(ReloadHandler, ContentRegExpHandler);
+Object.setPrototypeOf(ReloadHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction, router) {
     const pokeHandler = Object.create(PokeHandler);

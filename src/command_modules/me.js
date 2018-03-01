@@ -1,12 +1,12 @@
 const Discord = require("discord.js");
 const util = require("../util");
-const ContentRegExpHandler = require("../content-regexp-handler.js");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 const PlayingHandler = {
     PlayingHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.playing/);
+        this.PrefixedContentRegExpHandler(/playing/);
     },
     handle(message) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -23,11 +23,11 @@ const PlayingHandler = {
     }
 };
 
-Object.setPrototypeOf(PlayingHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PlayingHandler, PrefixedContentRegExpHandler);
 
 const SayHandler = {
     SayHandler() {
-        this.ContentRegExpHandler(/^\.say/);
+        this.PrefixedContentRegExpHandler(/say/);
     },
     handle(message) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -38,13 +38,13 @@ const SayHandler = {
     }
 };
 
-Object.setPrototypeOf(SayHandler, ContentRegExpHandler);
+Object.setPrototypeOf(SayHandler, PrefixedContentRegExpHandler);
 
 const HelpHandler = {
     HelpHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^\.help/);
+        this.PrefixedContentRegExpHandler(/help/);
     },
     handle(message) {
         message.author.createDM()
@@ -58,7 +58,7 @@ const HelpHandler = {
     }
 };
 
-Object.setPrototypeOf(HelpHandler, ContentRegExpHandler);
+Object.setPrototypeOf(HelpHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const playingHandler = Object.create(PlayingHandler);
