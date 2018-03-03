@@ -1,5 +1,9 @@
 ## Commands
 
+Admin
+* `.prefix [new_prefix]` - displays the current command prefix or if `new_prefix` is present, sets the current configuration (Note: requires `reload` to take effect)
+* `.reload` - reloads all commands (Authorized Role needed)
+
 Alarm
 * `.alarm time [description]` - sets an alarm for `time` (format: 2000 -> 20:00) with the `description` (default value is "Alarm") (Authorized Role needed)
 * `.clearalarm` - clears an alarm (Authorized Role needed)
@@ -10,7 +14,6 @@ Alarm
 Debug
 * `.ping` - the bot replies with "pong" message
 * `.poke` - the bot replies with "Leave me alone, please."
-* `.reload` - reload (Authorized Role needed)
 
 Gather
 * `.gather [question]` - if `question` is specified starts team gathering with the `question` as the title, otherwise shows the current standing
