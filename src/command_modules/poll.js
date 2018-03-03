@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const util = require("../util");
 const configuration = require("../configuration");
-const ContentRegExpHandler = require("../content-regexp-handler");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 const CSGO_ICON_URL = configuration.getConfig("gather.csgo.thumbnail",
     "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg");
@@ -83,7 +83,7 @@ function generatePollEmbed(channel, storage) {
 
 const PollEndHandler = {
     PollEndHandler() {
-        this.ContentRegExpHandler(/^\.pollend/);
+        this.PrefixedContentRegExpHandler(/pollend/);
     },
     handle(message, storage) {
         let poll = storage.getFromChannelLevel(message.channel, "poll");
@@ -111,11 +111,11 @@ const PollEndHandler = {
     }
 };
 
-Object.setPrototypeOf(PollEndHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PollEndHandler, PrefixedContentRegExpHandler);
 
 const PollStatHandler = {
     PollStatHandler() {
-        this.ContentRegExpHandler(/^\.pollstat/);
+        this.PrefixedContentRegExpHandler(/pollstat/);
     },
     handle(message, storage) {
         let embed = generatePollEmbed(message.channel, storage);
@@ -128,11 +128,11 @@ const PollStatHandler = {
     }
 };
 
-Object.setPrototypeOf(PollStatHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PollStatHandler, PrefixedContentRegExpHandler);
 
 const PollHandler = {
     PollHandler() {
-        this.ContentRegExpHandler(/^\.poll/);
+        this.PrefixedContentRegExpHandler(/poll/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(";"))
@@ -189,11 +189,11 @@ const PollHandler = {
     }
 };
 
-Object.setPrototypeOf(PollHandler, ContentRegExpHandler);
+Object.setPrototypeOf(PollHandler, PrefixedContentRegExpHandler);
 
 const MapPollHandler = {
     MapPollHandler() {
-        this.ContentRegExpHandler(/^\.csgomap\?/);
+        this.PrefixedContentRegExpHandler(/csgomap\?/);
     },
     handle(message, storage) {
         message.content = ".poll Which map?;Dust 2;Inferno;Mirage;Cache;Cobblestone;Overpass;Train;Nuke";
@@ -206,7 +206,7 @@ const MapPollHandler = {
     }
 };
 
-Object.setPrototypeOf(MapPollHandler, ContentRegExpHandler);
+Object.setPrototypeOf(MapPollHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const pollEndHandler = Object.create(PollEndHandler);

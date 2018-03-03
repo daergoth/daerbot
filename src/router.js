@@ -1,7 +1,6 @@
 const path = require("path");
 
 const glob = require("glob");
-const decache = require("decache");
 
 const COMMAND_MODULE_GLOB = path.join(__dirname, "command_modules", "*.js");
 
@@ -29,7 +28,7 @@ const Router = {
         }.bind(this));
     },
     clearCommandModules() {
-        this.commandModulePaths.forEach(decache);
+        this.commandModulePaths.forEach(p => delete require.cache[p]);
 
         this.commandModulePaths = [];
     },

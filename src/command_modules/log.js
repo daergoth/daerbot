@@ -1,11 +1,11 @@
 const configuration = require("../configuration");
-const ContentRegExpHandler = require("../content-regexp-handler.js");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 const LogToggleHandler = {
     LogToggleHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.logtoggle/);
+        this.PrefixedContentRegExpHandler(/logtoggle/);
     },
     handle(message, storage) {
         let logStatus = storage.getFromGuildLevel(message.guild, "log.status", true,
@@ -64,13 +64,13 @@ const LogToggleHandler = {
     }
 };
 
-Object.setPrototypeOf(LogToggleHandler, ContentRegExpHandler);
+Object.setPrototypeOf(LogToggleHandler, PrefixedContentRegExpHandler);
 
 const LogStatusHandler = {
     LogStatusHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.logstatus/);
+        this.PrefixedContentRegExpHandler(/logstatus/);
     },
     handle(message, storage) {
         let logStatus = storage.getFromGuildLevel(message.guild, "log.status", true,
@@ -80,7 +80,7 @@ const LogStatusHandler = {
     }
 };
 
-Object.setPrototypeOf(LogStatusHandler, ContentRegExpHandler);
+Object.setPrototypeOf(LogStatusHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const logToggleHandler = Object.create(LogToggleHandler);

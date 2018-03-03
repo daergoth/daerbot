@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const util = require("../util");
 const configuration = require("../configuration");
-const ContentRegExpHandler = require("../content-regexp-handler");
+const PrefixedContentRegExpHandler = require("../matchers/prefixed-content-regexp-handler");
 
 function channelAlarmTimer(message, storage) {
     let channelAlarms = storage.getFromChannelLevel(message.channel, "alarms", true, []);
@@ -104,7 +104,7 @@ const ChannelAlarmHandler = {
     ChannelAlarmHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.alarm/);
+        this.PrefixedContentRegExpHandler(/alarm/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -144,13 +144,13 @@ const ChannelAlarmHandler = {
     }
 };
 
-Object.setPrototypeOf(ChannelAlarmHandler, ContentRegExpHandler);
+Object.setPrototypeOf(ChannelAlarmHandler, PrefixedContentRegExpHandler);
 
 const AlarmHandler = {
     AlarmHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^\.selfalarm/);
+        this.PrefixedContentRegExpHandler(/selfalarm/);
     },
     handle(message, storage) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -190,13 +190,13 @@ const AlarmHandler = {
     }
 };
 
-Object.setPrototypeOf(AlarmHandler, ContentRegExpHandler);
+Object.setPrototypeOf(AlarmHandler, PrefixedContentRegExpHandler);
 
 const ClearChannelAlarmHandler = {
     ClearChannelAlarmHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.clearalarm/);
+        this.PrefixedContentRegExpHandler(/clearalarm/);
     },
     handle(message, storage) {
         let channelAlarms = storage.getFromChannelLevel(message.channel, "alarms", true, []);
@@ -230,13 +230,13 @@ const ClearChannelAlarmHandler = {
     }
 };
 
-Object.setPrototypeOf(ClearChannelAlarmHandler, ContentRegExpHandler);
+Object.setPrototypeOf(ClearChannelAlarmHandler, PrefixedContentRegExpHandler);
 
 const ClearAlarmHandler = {
     ClearAlarmHandler() {
         this.canBeDM = true;
 
-        this.ContentRegExpHandler(/^\.clearselfalarm/);
+        this.PrefixedContentRegExpHandler(/clearselfalarm/);
     },
     handle(message, storage) {
         let userAlarms = storage.getFromUserLevel(message.author, "alarms", true, []);
@@ -270,13 +270,13 @@ const ClearAlarmHandler = {
     }
 };
 
-Object.setPrototypeOf(ClearAlarmHandler, ContentRegExpHandler);
+Object.setPrototypeOf(ClearAlarmHandler, PrefixedContentRegExpHandler);
 
 const SetTimezoneHandler = {
     SetTimezoneHandler() {
         this.secure = true;
 
-        this.ContentRegExpHandler(/^\.settimezone/);
+        this.PrefixedContentRegExpHandler(/settimezone/);
     },
     handle(message) {
         let params = util.sanatizeCommandInput(message.content.split(" "));
@@ -293,7 +293,7 @@ const SetTimezoneHandler = {
     }
 };
 
-Object.setPrototypeOf(SetTimezoneHandler, ContentRegExpHandler);
+Object.setPrototypeOf(SetTimezoneHandler, PrefixedContentRegExpHandler);
 
 function registerHandlers(registerFunction) {
     const channelAlarmHandler = Object.create(ChannelAlarmHandler);
