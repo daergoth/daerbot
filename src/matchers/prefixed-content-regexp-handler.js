@@ -1,11 +1,17 @@
-const ContentRegexpHandler = require("./content-regexp-handler");
+const escapeStringRegexp = require("escape-string-regexp");
 
-const PrefixedContentRegexpHandler = {
-    PrefixedContentRegexpHandler(regExp) {
-        this.regExp = new RegExp("^\\." + regExp.source);
+const configuration = require("../configuration");
+const ContentRegExpHandler = require("./content-regexp-handler");
+
+const PrefixedContentRegExpHandler = {
+    PrefixedContentRegExpHandler(regExp) {
+        let prefix = configuration.getConfig("server.commandPrefix", ".");
+        prefix = escapeStringRegexp(prefix);
+
+        this.regExp = new RegExp("^" + prefix + regExp.source);
     }
 };
 
-Object.setPrototypeOf(PrefixedContentRegexpHandler, ContentRegexpHandler);
+Object.setPrototypeOf(PrefixedContentRegExpHandler, ContentRegExpHandler);
 
-module.exports = PrefixedContentRegexpHandler;
+module.exports = PrefixedContentRegExpHandler;

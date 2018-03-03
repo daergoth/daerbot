@@ -14,7 +14,8 @@ const restLoader = Object.create(RestLoader);
 
 var herokuSleepDisabler;
 
-Configuration.reloadConfiguration()
+Configuration.ConfigurationManager()
+    .reloadConfiguration()
     .then(function configurationLoaded() {
         commandRouter.Router();
         storage.Storage();

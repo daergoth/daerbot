@@ -3,6 +3,14 @@ const promisify = require("util").promisify;
 
 const storageFileName = "./storage.json";
 
+const defaultDbObject = {
+    users: Object.create(null),
+    messages: Object.create(null),
+    channels: Object.create(null),
+    guilds: Object.create(null)
+}; 
+Object.setPrototypeOf(defaultDbObject, null);
+
 const Storage = {
     Storage() {
         this.load();
@@ -216,6 +224,9 @@ const Storage = {
         return result;
     },
     persist() {
+        if (!this.db) {
+            this.db = Object.assign(Object.create(null), defaultDbObject);
+        }
         return promisify(fs.writeFile.bind(this))(storageFileName, JSON.stringify(this.db));
     },
     load() {
@@ -240,13 +251,7 @@ const Storage = {
                         }
                     );
                 } else {
-                    this.db = {
-                        users: Object.create(null),
-                        messages: Object.create(null),
-                        channels: Object.create(null),
-                        guilds: Object.create(null)
-                    };
-                    Object.setPrototypeOf(this.db, null);
+                    this.db = Object.assign(Object.create(null), defaultDbObject);
                 }
             }.bind(this));
     }
