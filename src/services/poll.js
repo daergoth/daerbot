@@ -11,8 +11,8 @@ const PollHelperService = {
     generatePollEmbed(channel) {
         let poll = storage.getFromChannelLevel(channel, "poll");
     
-        if (poll) {
-            let sumVotes = poll.votes.reduce((prev, curr) => prev + curr);
+        if (poll && poll.voteCollector) {
+            let sumVotes = poll.votes.reduce((prev, curr) => prev + curr, 0);
     
             let result = [];
             for (let i = 0; i < poll.options.length; ++i) {

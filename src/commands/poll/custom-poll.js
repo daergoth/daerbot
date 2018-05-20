@@ -1,8 +1,8 @@
 const commando = require("discord.js-commando");
 
-const storage = require("../../service/storage");
+const storage = require("../../services/storage");
 
-const PollHelperService = require("../../service/poll");
+const PollHelperService = require("../../services/poll");
 
 module.exports = class PollCommand extends commando.Command {
     constructor(client) {

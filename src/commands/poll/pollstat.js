@@ -1,6 +1,6 @@
 const commando = require("discord.js-commando");
 
-const PollHelperService = require("../../service/poll");
+const PollHelperService = require("../../services/poll");
 
 module.exports = class PollStatCommand extends commando.Command {
     constructor(client) {

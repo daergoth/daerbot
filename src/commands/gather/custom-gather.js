@@ -1,9 +1,9 @@
 const commando = require("discord.js-commando");
 
-const storage = require("../../service/storage");
+const storage = require("../../services/storage");
 const customGatherCommandStorage = require("../../custom-gather-config.json");
 
-const GatherHelperService = require("../../service/gather");
+const GatherHelperService = require("../../services/gather");
 
 module.exports = class CustomGatherStartCommand extends commando.Command {
     constructor(client) {

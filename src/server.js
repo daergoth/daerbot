@@ -4,8 +4,8 @@ const path = require("path");
 const oneLine = require("common-tags").oneLine;
 const sqlite = require("sqlite");
 
-const RestLoader = require("./service/rest-loader");
-const Storage = require("./service/storage");
+const RestLoader = require("./services/rest-loader");
+const Storage = require("./services/storage");
 
 const restLoader = Object.create(RestLoader);
 
