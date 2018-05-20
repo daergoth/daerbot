@@ -71,7 +71,7 @@ client.registry
     //.registerGroup("log", "Server log")
     .registerGroup("me", "/Me")
     //.registerGroup("music", "Youtube Music Play")
-    //.registerGroup("poll", "Poll")
+    .registerGroup("poll", "Poll")
     .registerDefaults()
     .registerTypesIn(path.join(__dirname, "types"))
     .registerCommandsIn(path.join(__dirname, "commands"));
