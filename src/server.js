@@ -1,127 +1,95 @@
 const http = require("http");
-const Discord = require("discord.js");
+const commando = require("discord.js-commando");
+const path = require("path");
+const oneLine = require("common-tags").oneLine;
+const sqlite = require("sqlite");
 
-const Router = require("./router");
-const Storage = require("./storage");
-const Configuration = require("./configuration");
-const RestLoader = require("./rest-loader");
+const RestLoader = require("./service/rest-loader");
+const Storage = require("./service/storage");
 
-const client = new Discord.Client();
-
-const commandRouter = Object.create(Router);
-const storage = Object.create(Storage);
 const restLoader = Object.create(RestLoader);
+
+restLoader.RestLoader(process.env.PORT ? process.env.PORT : 3000);
+Storage.Storage();
 
 var herokuSleepDisabler;
 
-Configuration.ConfigurationManager()
-    .reloadConfiguration()
-    .then(function configurationLoaded() {
-        commandRouter.Router();
-        storage.Storage();
-        restLoader.RestLoader(process.env.PORT ? process.env.PORT : 3000);
+const client = new commando.Client({
+    owner: process.env.OWNER_ID,
+    commandPrefix: ".",
+    commandEditableDuration: 0,
+    unknownCommandResponse: false
+});
 
-        return commandRouter.reloadCommandModules();
+client
+    .on("error", console.error)
+    .on("warn", console.warn)
+    .on("debug", console.log)
+    .on("ready", () => {
+        console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
     })
-    .then(function commandModulesLoaded() {
-        commandRouter.registerPreHandleHook(
-            function disableSelfMessagePreHandleHook(handlerObject, message) {
-                return message.author !== message.client.user;
-            }
-        );
-
-        commandRouter.registerPreHandleHook(
-            function filterTextChannelMessagePreHandleHook(handlerObject, message) {
-                if (handlerObject.canBeDM) {
-                    return message.channel.type === "text" ||
-                        message.channel.type === "dm";
-                } else {
-                    return message.channel.type === "text";
-                }
-            }
-        );
-
-        commandRouter.registerPreHandleHook(
-            function loggerPreHandleHook(handlerObject, message) {
-                console.info(`${new Date(message.createdTimestamp).toISOString()} ${message.author.tag}: ${message.content}`);
-                return true;
-            }
-        );
-
-        commandRouter.registerPreHandleHook(
-            function roleAuthorizationPreHandleHook(handlerObject, message) {
-                if (handlerObject.secure) {
-                    if (message.guild) {
-                        return message.guild.fetchMember(message)
-                            .then(guildMember => {
-                                let role = guildMember.roles.find(r => r.name === Configuration.getConfig("server.adminRole", "DaerBot"));
-                                if (role) {
-                                    return true;
-                                } else {
-                                    message.channel.send("You don't have permission to use this command!");
-                                    console.info("Unauthorized!");
-                                    return false;
-                                }
-                            })
-                            .catch(err => console.error(`Couldn't fetch member for message ("${message.content}"): ${err}`));
-                    } else {
-                        console.warn("Message has no guild, when channel is TextChannel!");
-                        console.log(message.channel);
-                        return false;
-                    }
-                } else {
-                    return true;
-                }
-            }
-        );
-
-        commandRouter.registerPreHandleHook(
-            function showWorkingIndicatorPreHandleHook(handlerObject, message) {
-                message.channel.startTyping();
-                return true;
-            }
-        );
+    .on("disconnect", () => { console.warn("Disconnected!"); })
+    .on("reconnecting", () => { console.warn("Reconnecting..."); })
+    .on("commandError", (cmd, err) => {
+        if(err instanceof commando.FriendlyError) return;
+        console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
     })
-    .then(function preHandleHooksLoaded() {
-        commandRouter.registerPostHandleHook(
-            function hideWorkingIndicatorPostHandleHook(handlerObject, message) {
-                message.channel.stopTyping(true);
-                return true;
-            }
-        );
+    .on("commandBlocked", (msg, reason) => {
+        console.log(oneLine`
+			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ""}
+			blocked; ${reason}
+		`);
     })
-    .then(function postHandleHooksLoaded() {
-        client.on("ready", () => console.log("I am ready!"));
+    .on("commandPrefixChange", (guild, prefix) => {
+        console.log(oneLine`
+			Prefix ${prefix === "" ? "removed" : `changed to ${prefix || "the default"}`}
+			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
+		`);
+    })
+    .on("commandStatusChange", (guild, command, enabled) => {
+        console.log(oneLine`
+			Command ${command.groupID}:${command.memberName}
+			${enabled ? "enabled" : "disabled"}
+			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
+		`);
+    })
+    .on("groupStatusChange", (guild, group, enabled) => {
+        console.log(oneLine`
+			Group ${group.id}
+			${enabled ? "enabled" : "disabled"}
+			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
+		`);
+    });
 
-        client.on("message", function handleMessage(message) {
-            const handlerObject = commandRouter.route(message);
+client.setProvider(
+    sqlite.open(path.join(__dirname, "database.sqlite3")).then(db => new commando.SQLiteProvider(db))
+).catch(console.error);
 
-            if (handlerObject) {
-                if (!commandRouter.runPreHandleHooks(handlerObject, message)) {
-                    return;
+client.registry
+    //.registerGroup("alarm", "Alarm")
+    .registerGroup("gather", "Gather")
+    //.registerGroup("log", "Server log")
+    .registerGroup("me", "/Me")
+    //.registerGroup("music", "Youtube Music Play")
+    //.registerGroup("poll", "Poll")
+    .registerDefaults()
+    .registerTypesIn(path.join(__dirname, "types"))
+    .registerCommandsIn(path.join(__dirname, "commands"));
+
+client.login(process.env.BOT_TOKEN)
+    .then(function discordBotStarted() {
+        restLoader.load(client)
+            .then(function endpointsLoaded() {
+                //restLoader.start();
+            })
+            .then(function restStarted() {
+                if (process.env.HEROKU_ENV) {
+                // Workaround for Heroku's dyno auto-sleep feature
+                // If the dyno under the bot sleeps, the bot will be offline
+                    herokuSleepDisabler = setInterval(function() {
+                        http.get(process.env.HEROKU_ENV);
+                    }, 1000 * 60 * 20); // every 20 minutes
                 }
-
-                handlerObject.handle(message, storage);
-
-                commandRouter.runPostHandleHooks(handlerObject, message);
-            }
-        });
-
-        client.login(process.env.BOT_TOKEN)
-            .then(function discordBotStarted() {
-                restLoader.load(client)
-                    .then(function endpointsLoaded() {
-                        restLoader.start();
-                    })
-                    .then(function restStarted() {
-                        if (process.env.HEROKU_ENV) {
-                            // Workaround for Heroku's dyno auto-sleep feature
-                            // If the dyno under the bot sleeps, the bot will be offline
-                            herokuSleepDisabler = setInterval(function() {
-                                http.get(process.env.HEROKU_ENV);
-                            }, 1000 * 60 * 20); // every 20 minutes
-                        }
-                    });
             });
     })
     .catch(function failure(err) {

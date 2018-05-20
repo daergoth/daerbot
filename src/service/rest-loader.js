@@ -2,7 +2,7 @@ const path = require("path");
 const glob = require("glob");
 const express = require("express");
 
-const ENDPOINTS_GLOB = path.join(__dirname, "endpoints", "*.js");
+const ENDPOINTS_GLOB = path.join(__dirname, "../rest_endpoints", "*.js");
 
 const RestLoader = {
     RestLoader(portNum) {
