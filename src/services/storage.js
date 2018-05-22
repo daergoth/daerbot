@@ -1,8 +1,3 @@
-const fs = require("fs");
-const promisify = require("util").promisify;
-
-const storageFileName = "./storage.json";
-
 const defaultDbObject = {
     users: Object.create(null),
     messages: Object.create(null),
@@ -13,178 +8,58 @@ Object.setPrototypeOf(defaultDbObject, null);
 
 const Storage = {
     Storage() {
-        this.load();
+        this.db = Object.assign(Object.create(null), defaultDbObject);
     },
 
     saveOnMessageLevel(message, query, saveObject) {
-        let path = query.split(".");
-        let targetRoot = this.db.messages[message.id] || Object.create(null);
-        let target = targetRoot;
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (target && p in target) {
-                target = target[p];
-
-                if (i == path.length - 1) {
-                    Object.assign(target, saveObject);
-                }
-            } else {
-                if (i == path.length - 1) {
-                    target[p] = saveObject;
-                } else {
-                    target[p] = Object.create(null);
-                    target = target[p];
-                }
-            }
-        }
-
-        this.db.messages[message.id] = targetRoot;
+        this._save(this.db.messages, message, query, saveObject);
     },
     getFromMessageLevel(message, query, isCreate = false, defaultValue = Object.create(null)) {
-        let path = query.split(".");
-        let result = this.db.message[message.id];
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (result && p in result) {
-                result = result[p];
-            } else {
-                if (isCreate) {
-                    if (!result) {
-                        result = Object.create(null);
-                    }
-
-                    result[p] = (i == path.length - 1) ? defaultValue : Object.create(null);
-                    result = result[p];
-                } else {
-                    return undefined;
-                }
-            }
-        }
-
-        return result;
+        return this._get(this.db.messages, message, query, isCreate, defaultValue);
     },
 
     saveOnUserLevel(user, query, saveObject) {
-        let path = query.split(".");
-        let targetRoot = this.db.users[user.id] || Object.create(null);
-        let target = targetRoot;
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (target && p in target) {
-                target = target[p];
-
-                if (i == path.length - 1) {
-                    Object.assign(target, saveObject);
-                }
-            } else {
-                if (i == path.length - 1) {
-                    target[p] = saveObject;
-                } else {
-                    target[p] = Object.create(null);
-                    target = target[p];
-                }
-            }
-        }
-
-        this.db.users[user.id] = targetRoot;
+        this._save(this.db.users, user, query, saveObject);
     },
     getFromUserLevel(user, query, isCreate = false, defaultValue = Object.create(null)) {
-        let path = query.split(".");
-        let result = this.db.users[user.id];
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (result && p in result) {
-                result = result[p];
-            } else {
-                if (isCreate) {
-                    if (!result) {
-                        result = Object.create(null);
-                    }
-
-                    result[p] = (i == path.length - 1) ? defaultValue : Object.create(null);
-                    result = result[p];
-                } else {
-                    return undefined;
-                }
-            }
-        }
-
-        return result;
+        return this._get(this.db.users, user, query, isCreate, defaultValue);
     },
 
     saveOnChannelLevel(channel, query, saveObject) {
-        let path = query.split(".");
-        let targetRoot = this.db.channels[channel.id] || Object.create(null);
-        let target = targetRoot;
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (target && p in target) {
-                target = target[p];
-
-                if (i == path.length - 1) {
-                    Object.assign(target, saveObject);
-                }
-            } else {
-                if (i == path.length - 1) {
-                    target[p] = saveObject;
-                } else {
-                    target[p] = Object.create(null);
-                    target = target[p];
-                }
-            }
-        }
-
-        this.db.channels[channel.id] = targetRoot;
+        this._save(this.db.channels, channel, query, saveObject);
     },
     getFromChannelLevel(channel, query, isCreate = false, defaultValue = Object.create(null)) {
-        let path = query.split(".");
-        let result = this.db.channels[channel.id];
-
-        for (let i = 0; i < path.length; ++i) {
-            let p = path[i];
-
-            if (result && p in result) {
-                result = result[p];
-            } else {
-                if (isCreate) {
-                    if (!result) {
-                        result = Object.create(null);
-                    }
-
-                    result[p] = (i == path.length - 1) ? defaultValue : Object.create(null);
-                    result = result[p];
-                } else {
-                    return undefined;
-                }
-            }
-        }
-
-        return result;
+        return this._get(this.db.channels, channel, query, isCreate, defaultValue);
     },
 
     saveOnGuildLevel(guild, query, saveObject) {
+        this._save(this.db.guilds, guild, query, saveObject);
+    },
+    getFromGuildLevel(guild, query, isCreate = false, defaultValue = Object.create(null)) {
+        return this._get(this.db.guilds, guild, query, isCreate, defaultValue);
+    },
+
+    _save(level, idObj, query, saveObject) {
         let path = query.split(".");
-        let targetRoot = this.db.guilds[guild.id] || Object.create(null);
+        
+        if (!level[idObj.id]) {
+            level[idObj.id] = Object.create(null);
+        }
+        let targetRoot = level[idObj.id];
         let target = targetRoot;
 
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
             if (target && p in target) {
-                target = target[p];
-
                 if (i == path.length - 1) {
-                    Object.assign(target, saveObject);
+                    if (typeof saveObject === "object") {
+                        Object.assign(target, saveObject);
+                    } else {
+                        target[p] = saveObject;
+                    }
+                } else {
+                    target = target[p];
                 }
             } else {
                 if (i == path.length - 1) {
@@ -196,11 +71,16 @@ const Storage = {
             }
         }
 
-        this.db.guilds[guild.id] = targetRoot;
+        level[idObj.id] = targetRoot;
     },
-    getFromGuildLevel(guild, query, isCreate = false, defaultValue = Object.create(null)) {
+
+    _get(level, idObj, query, isCreate, defaultValue) {
         let path = query.split(".");
-        let result = this.db.guilds[guild.id];
+        
+        if (!this.db.guilds[idObj.id]) {
+            this.db.guilds[idObj.id] = Object.create(null);
+        }
+        let result = this.db.guilds[idObj.id];
 
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
@@ -222,40 +102,7 @@ const Storage = {
         }
 
         return result;
-    },
-    persist() {
-        if (!this.db) {
-            this.db = Object.assign(Object.create(null), defaultDbObject);
-        }
-        return promisify(fs.writeFile.bind(this))(storageFileName, JSON.stringify(this.db));
-    },
-    load() {
-        fs.exists(storageFileName,
-            function storageExists(exists) {
-                if (exists) {
-                    fs.readFile(storageFileName,
-                        function storageReadError(err, data) {
-                            if (err) {
-                                console.error(`Error while reading persistence storage: ${err}`);
-                                this.db = {
-                                    users: Object.create(null),
-                                    messages: Object.create(null),
-                                    channels: Object.create(null),
-                                    guilds: Object.create(null)
-                                };
-                                Object.setPrototypeOf(this.db, null);
-                                return;
-                            }
-
-                            this.db = JSON.parse(data);
-                        }
-                    );
-                } else {
-                    this.db = Object.assign(Object.create(null), defaultDbObject);
-                }
-            }.bind(this));
     }
-
 };
 
 module.exports = Storage;
