@@ -12,20 +12,12 @@ module.exports = class CustomGatherStartCommand extends commando.Command {
             group: "gather",
             memberName: "custom-gather",
             description: "Starts a game-specific gather event in this channel.",
-            examples: [
-                "csgo? Who wants to play with me?",
-                "lol?",
-                "dota2?",
-                "sc2?",
-                "pubg?",
-                "rl?",
-                "wow?",
-                "film?",
-                "battlerite?",
-                "tabletop?",
-                "r6s?",
-                "payday?"
-            ],
+            examples: ["csgo? Who wants to play with me?"].concat(
+                Object.keys(customGatherCommandStorage.gather)
+                    .map(key => {
+                        return `${key}?`;
+                    })
+            ),
             guildOnly: true,
             aliases: Object.keys(customGatherCommandStorage.gather)
                 .map(key => {

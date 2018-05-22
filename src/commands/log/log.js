@@ -49,7 +49,8 @@ module.exports = class LogCommand extends commando.Command {
                     type: "string",
                     default: ""
                 }
-            ]
+            ],
+            guildOnly: true
         });
     }
 
