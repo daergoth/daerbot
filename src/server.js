@@ -80,7 +80,7 @@ client.login(process.env.BOT_TOKEN)
     .then(function discordBotStarted() {
         restLoader.load(client)
             .then(function endpointsLoaded() {
-                //restLoader.start();
+                restLoader.start();
             })
             .then(function restStarted() {
                 if (process.env.HEROKU_ENV) {
