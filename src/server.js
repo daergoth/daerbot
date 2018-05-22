@@ -68,7 +68,7 @@ client.setProvider(
 client.registry
     //.registerGroup("alarm", "Alarm")
     .registerGroup("gather", "Gather")
-    //.registerGroup("log", "Server log")
+    .registerGroup("log", "Server log")
     .registerGroup("me", "/Me")
     //.registerGroup("music", "Youtube Music Play")
     .registerGroup("poll", "Poll")
