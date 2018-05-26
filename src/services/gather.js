@@ -19,7 +19,7 @@ const GatherHelperService = {
                     });
                 });
         } else {
-            console.warn("Cannot send Gather status: no RichEmbed saved in Storage!");
+            channel.client.emit("warn", "Cannot send Gather status: no RichEmbed saved in Storage!");
         }
     },
 
@@ -61,7 +61,7 @@ const GatherHelperService = {
         this.createGatherRichEmbed(
             {
                 username: message.author.username,
-                avatarURL: message.author.avatarURL
+                avatarURL: message.author.displayAvatarURL
             },
             message.channel,
             title
