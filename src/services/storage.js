@@ -54,7 +54,7 @@ const Storage = {
             if (target && p in target) {
                 if (i == path.length - 1) {
                     if (typeof saveObject === "object") {
-                        Object.assign(target, saveObject);
+                        Object.assign(target[p], saveObject);
                     } else {
                         target[p] = saveObject;
                     }
@@ -71,16 +71,16 @@ const Storage = {
             }
         }
 
-        level[idObj.id] = targetRoot;
+        //level[idObj.id] = targetRoot;
     },
 
     _get(level, idObj, query, isCreate, defaultValue) {
         let path = query.split(".");
         
-        if (!this.db.guilds[idObj.id]) {
-            this.db.guilds[idObj.id] = Object.create(null);
+        if (!level[idObj.id]) {
+            level[idObj.id] = Object.create(null);
         }
-        let result = this.db.guilds[idObj.id];
+        let result = level[idObj.id];
 
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
