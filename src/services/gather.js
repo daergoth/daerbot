@@ -1,6 +1,5 @@
 const Discord = require("discord.js");
 const storage = require("./storage");
-const util = require("./util");
 
 const customGatherCommandStorage = require("../custom-gather-config.json");
 
@@ -111,26 +110,32 @@ const GatherHelperService = {
         let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
     
         if (starterMessage && message.channel === starterMessage.channel) {
-            if (message.content.startsWith("+") && !playerList.includes(message.author)) {
-                playerList.push(message.author);
-    
-                let note = util.sanatizeCommandInput(message.content.split(" ").slice(1)).join(" ");
-    
-                let m = `${playerList.length} - ${message.author}`;
-                if (note) {
-                    m += `: ${note}`;
+            let joiningUsers = [];
+            let regexp = /^(<@\d+>\s*)+\+/i;
+            if (message.cleanContent.startsWith("+")) {
+                joiningUsers = joiningUsers.concat(message.author);
+            } else if (message.mentions.members && regexp.test(message.content)) {
+                joiningUsers = joiningUsers.concat(message.mentions.members.array());
+            }
+
+            for (let i = 0; i < joiningUsers.length; ++i) {
+                let joiningUser = joiningUsers[i];
+                if (!playerList.includes(joiningUser)) {
+                    playerList.push(joiningUser);
+        
+                    let note = message.content.split("+").slice(1).join("+");
+        
+                    let m = `${playerList.length} - ${joiningUser}`;
+                    if (note) {
+                        m += `: ${note}`;
+                    }
+        
+                    currentRichEmbed.addField("\u200B", m);
+        
+                    gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
+        
+                    message.delete(2000);
                 }
-    
-                currentRichEmbed.addField("\u200B", m);
-    
-                gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
-    
-                message.delete(2000);
-    
-                storage.saveOnChannelLevel(message.channel, "gather", {
-                    playerList: playerList,
-                    currentRichEmbed: currentRichEmbed
-                });
             }
         }
     }
