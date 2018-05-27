@@ -2,6 +2,7 @@ TODO.md
 .vscode/
 _site/
 storage.json
+database.sqlite3
 
 # Logs
 logs

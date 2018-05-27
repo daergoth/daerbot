@@ -1,13 +1,4 @@
 {
-    "log": {
-        "status": true,
-        "channelName": "log"
-    },
-    "alarm.timezone": "0200",
-    "server": {
-        "adminRole": "DaerBot",
-        "commandPrefix": "."
-    },
     "gather": {
         "csgo": {
             "thumbnail": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg",
@@ -56,6 +47,10 @@
         "payday": {
             "thumbnail": "http://cdn.akamai.steamstatic.com/steam/apps/218620/header.jpg",
             "title": "Payday 2?"
+        },
+        "fortnite": {
+            "thumbnail":"https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Fortnite_Battle_Royale.png/330px-Fortnite_Battle_Royale.png",
+            "title":"Fortnite Battle Royal?"
         }
     }
 }

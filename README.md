@@ -8,9 +8,15 @@ _This bot is only a fun project to learn JS, there are no promises that it will 
 
 ## Install & Run
 
-You will have to set `BOT_TOKEN` environment variable with your Discord Bot token.  
+Required environment variables:
 
-Also if you plan to run the bot on Heroku, you should set the `HEROKU_ENV` environment variable, too.
+| Name       | Description                 |
+| ---------- | --------------------------- |
+| BOT_TOKEN  | Discord Bot Token           |
+| OWNER_ID   | Discord UserID of the Owner |
+| HEROKU_ENV | Optional. Heroku app link   |
+
+If you plan to run the bot on Heroku, you should set the `HEROKU_ENV` environment variable.
 
 After that:
 
