@@ -11,10 +11,10 @@ function logListener(oldMember, newMember) {
         if (!logChannel) {
             oldMember.guild.createChannel(logChannelName, "text")
                 .then(textChannel => {
-                    console.log("Created channel for logging: #", textChannel.name);
+                    oldMember.client.emit("info", `Created channel for logging: ${textChannel}`);
                     logChannel = textChannel;
                 })
-                .catch(error => console.log("Error while creating log channel: " + error));
+                .catch(error => oldMember.client.emit("error", "Error while creating log channel: " + error));
         }
 
         if (!oldMember.voiceChannel) {

@@ -104,26 +104,39 @@ const GatherHelperService = {
     },
 
     _joinListener (storage, message) {
+
+        function idCheck(user1, user2) {
+            return user1.id === user2.id;
+        }
+
         let starterMessage = storage.getFromChannelLevel(message.channel, "gather.starterMessage");
         let playerList = storage.getFromChannelLevel(message.channel, "gather.playerList", true, []);
         let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
         let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
     
-        if (starterMessage && message.channel === starterMessage.channel) {
+        if (starterMessage && message.channel.id === starterMessage.channel.id) {
             let joiningUsers = [];
-            let regexp = /^(<@\d+>\s*)+\+/i;
+            let regexp = /^(<@\d+>\s*)+\+/;
+
+            let joinType = undefined;
             if (message.cleanContent.startsWith("+")) {
                 joiningUsers = joiningUsers.concat(message.member);
+                joinType = "own";
             } else if (message.mentions.members && regexp.test(message.content)) {
                 joiningUsers = joiningUsers.concat(message.mentions.members.array());
+                joinType = "other";
+            } else {
+                return;
             }
+            message.client.emit("debug", `Gather join: type=${joinType} author="${message.author.tag}" content="${message.content}" cleanContent="${message.cleanContent}"`);
+            
+            let note = message.content.split("+").slice(1).join("+");
 
             for (let i = 0; i < joiningUsers.length; ++i) {
                 let joiningUser = joiningUsers[i];
-                if (!playerList.includes(joiningUser)) {
+                if (!playerList.some(idCheck.bind(this, joiningUser)) 
+                        && !note.includes(`${joiningUser}`)) {
                     playerList.push(joiningUser);
-        
-                    let note = message.content.split("+").slice(1).join("+");
         
                     let m = `${playerList.length} - ${joiningUser}`;
                     if (note) {
@@ -132,9 +145,17 @@ const GatherHelperService = {
         
                     currentRichEmbed.addField("\u200B", m);
         
-                    gatherMessages.forEach(gM => gM.edit(currentRichEmbed));
+                    gatherMessages.forEach(gM => {
+                        if (gM.editable) {
+                            gM.edit(currentRichEmbed)
+                                .catch(error => message.client.emit("warn", `Cannot edit gather status message: ${error}`));
+                        }
+                    });
         
-                    message.delete(2000);
+                    if (message.deletable) {
+                        message.delete(2000)
+                            .catch(error => message.client.emit("warn", `Cannot delete gather join message: ${error}`));
+                    }
                 }
             }
         }

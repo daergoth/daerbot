@@ -22,39 +22,40 @@ const client = new commando.Client({
 });
 
 client
-    .on("error", console.error)
-    .on("warn", console.warn)
-    .on("debug", console.log)
+    .on("error", error => console.error(`[ERROR] ${error}`))
+    .on("warn", warn => console.warn(`[WARN] ${warn}`))
+    .on("info", info => console.log(`[INFO] ${info}`))
+    .on("debug", debug => console.log(`[DEBUG] ${debug}`))
     .on("ready", () => {
-        console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+        client.emit("info", `Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
     })
-    .on("disconnect", () => { console.warn("Disconnected!"); })
-    .on("reconnecting", () => { console.warn("Reconnecting..."); })
+    .on("disconnect", () => { client.emit("warn", "Disconnected!"); })
+    .on("reconnecting", () => { client.emit("warn", "Reconnecting..."); })
     .on("commandError", (cmd, err) => {
         if(err instanceof commando.FriendlyError) return;
-        console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
+        client.emit("error",`Error in command ${cmd.groupID}:${cmd.memberName} - ${err}`);
     })
     .on("commandBlocked", (msg, reason) => {
-        console.log(oneLine`
+        client.emit("info", oneLine`
 			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ""}
 			blocked; ${reason}
 		`);
     })
     .on("commandPrefixChange", (guild, prefix) => {
-        console.log(oneLine`
+        client.emit("info", oneLine`
 			Prefix ${prefix === "" ? "removed" : `changed to ${prefix || "the default"}`}
 			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
 		`);
     })
     .on("commandStatusChange", (guild, command, enabled) => {
-        console.log(oneLine`
+        client.emit("info", oneLine`
 			Command ${command.groupID}:${command.memberName}
 			${enabled ? "enabled" : "disabled"}
 			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
 		`);
     })
     .on("groupStatusChange", (guild, group, enabled) => {
-        console.log(oneLine`
+        client.emit("info", oneLine`
 			Group ${group.id}
 			${enabled ? "enabled" : "disabled"}
 			${guild ? `in guild ${guild.name} (${guild.id})` : "globally"}.
@@ -63,7 +64,7 @@ client
 
 client.setProvider(
     sqlite.open(path.join(__dirname, "database.sqlite3")).then(db => new commando.SQLiteProvider(db))
-).catch(console.error);
+).catch(error => client.emit("error", `${error}`));
 
 client.registry
     //.registerGroup("alarm", "Alarm")
@@ -93,10 +94,10 @@ client.login(process.env.BOT_TOKEN)
                 }
             });
     })
-    .catch(function failure(err) {
-        console.log("Failure during setup:", err);
+    .catch((err) => {
+        client.emit("error", `Failure during setup: ${err}`);
 
-        console.log("Shutting down...");
+        client.emit("warn", "Shutting down...");
 
         if (process.env.HEROKU_ENV) {
             clearInterval(herokuSleepDisabler);
