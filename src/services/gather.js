@@ -116,7 +116,7 @@ const GatherHelperService = {
     
         if (starterMessage && message.channel.id === starterMessage.channel.id) {
             let joiningUsers = [];
-            let regexp = /^(<@\d+>\s*)+\+/;
+            let regexp = /^(<@(!)?\d+>\s*)+\+/;
 
             let joinType = undefined;
             if (message.cleanContent.startsWith("+")) {

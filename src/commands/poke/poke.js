@@ -39,9 +39,15 @@ module.exports = class PokeCommand extends commando.Command {
             notificationService.notifyUser(args.user, 5,
                 ((dmChannel) => {
                     if (args.pokeMessage) {
-                        dmChannel.send(`${msg.author} poked you: ${args.pokeMessage}`, {tts:true});
+                        dmChannel.send(`${msg.author} poked you: ${args.pokeMessage}`, {tts:true})
+                            .catch(err => msg.client.emit("error", `Cannot send poke message: ${err}`));
                     }
-                }));
+                }))
+                .then(() => 
+                    msg.channel.send(`${msg.author} poked ${args.user}!`)
+                        .then(msg => msg.delete(2000))
+                        .catch(err => msg.client.emit("error", `Poke error: ${err}`))
+                );
         }
     }
 };
