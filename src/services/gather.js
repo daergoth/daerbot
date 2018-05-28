@@ -113,7 +113,7 @@ const GatherHelperService = {
             let joiningUsers = [];
             let regexp = /^(<@\d+>\s*)+\+/i;
             if (message.cleanContent.startsWith("+")) {
-                joiningUsers = joiningUsers.concat(message.author);
+                joiningUsers = joiningUsers.concat(message.member);
             } else if (message.mentions.members && regexp.test(message.content)) {
                 joiningUsers = joiningUsers.concat(message.mentions.members.array());
             }
