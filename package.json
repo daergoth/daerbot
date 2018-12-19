@@ -23,7 +23,7 @@
     "stringstream": "^1.0.0"
   },
   "engines": {
-    "node": "10.4.2"
+    "node": "10.14.2"
   },
   "devDependencies": {},
   "scripts": {
