@@ -51,6 +51,14 @@
         "fortnite": {
             "thumbnail":"https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Fortnite_Battle_Royale.png/330px-Fortnite_Battle_Royale.png",
             "title":"Fortnite Battle Royal?"
+        },
+        "destiny2": {
+            "thumbnail": "https://www.destinythegame.com/content/dam/atvi/bungie/destiny2/common/D1_Logo-White.png",
+            "title": "Destiny 2?"
+        },
+        "pinturillo": {
+            "thumbnail": "https://www.pinturillo2.com/data/img/logotop.png",
+            "title": "Pinturillo?"
         }
     }
 }

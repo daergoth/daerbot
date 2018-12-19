@@ -1,6 +1,6 @@
 const NotificationService = {
 
-    notifyUser(user, times, before = () => {}) {
+    notifyUser(user, times, messageStr = "Poke", before = () => {}) {
         let dmChannelPromise = undefined;
         if (user.dmChannel) {
             dmChannelPromise = new Promise((resolve) => resolve(user.dmChannel));
@@ -13,7 +13,7 @@ const NotificationService = {
         dmChannelPromise
             .then(channel => { 
                 for (let i = 0; i < times; ++i) {
-                    channel.send("Poke").then(message => message.delete());
+                    channel.send(messageStr).then(message => message.delete());
                 }
             });
       

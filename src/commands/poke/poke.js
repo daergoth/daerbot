@@ -36,7 +36,7 @@ module.exports = class PokeCommand extends commando.Command {
 
     run(msg, args) {
         if (msg.guild.member(args.user)) {
-            notificationService.notifyUser(args.user, 5,
+            notificationService.notifyUser(args.user, 5, "Poke",
                 ((dmChannel) => {
                     if (args.pokeMessage) {
                         dmChannel.send(`${msg.author} poked you: ${args.pokeMessage}`, {tts:true})
@@ -45,7 +45,7 @@ module.exports = class PokeCommand extends commando.Command {
                 }))
                 .then(() => 
                     msg.channel.send(`${msg.author} poked ${args.user}!`)
-                        .then(msg => msg.delete(2000))
+                        .then(() => msg.delete(2000))
                         .catch(err => msg.client.emit("error", `Poke error: ${err}`))
                 );
         }
