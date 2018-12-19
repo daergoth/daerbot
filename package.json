@@ -4,21 +4,23 @@
   "description": "A simple Discord Bot developed for fun",
   "main": "src/server.js",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "common-tags": "^1.7.2",
-    "discord.js": "^11.2.1",
+    "bluebird": "^3.5.3",
+    "common-tags": "^1.8.0",
+    "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
     "erlpack": "github:hammerandchisel/erlpack",
     "escape-string-regexp": "^1.0.5",
-    "express": "^4.16.2",
+    "express": "^5.0.0-alpha.7",
     "ffmpeg-binaries": "^4.0.0",
-    "glob": "^7.1.2",
+    "glob": "^7.1.3",
     "node-opus": "^0.3.1",
     "require-all": "^3.0.0",
     "sodium": "^3.0.2",
     "sqlite": "^3.0.0",
     "uws": "^99.0.0",
-    "ytdl-core": "^0.28.3"
+    "ytdl-core": "^0.28.3",
+    "hoek": "^6.1.2",
+    "stringstream": "^1.0.0"
   },
   "engines": {
     "node": "8.5.0"
