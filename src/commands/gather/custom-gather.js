@@ -34,7 +34,7 @@ module.exports = class CustomGatherStartCommand extends commando.Command {
             ]
         });
 
-        let commandKeywords = Object.keys(customGatherCommandStorage.gather).concat(["custom-gather"]); 
+        let commandKeywords = Object.keys(customGatherCommandStorage.gather).concat(["custom-gather"]);
         let regexpString = "(" + commandKeywords.join("|") + ")\\?";
 
         this.regexp = new RegExp(regexpString);
@@ -44,17 +44,17 @@ module.exports = class CustomGatherStartCommand extends commando.Command {
         let keywords = this.regexp.exec(msg.cleanContent);
 
         if (keywords && keywords.length >= 2) {
-            if (customGatherCommandStorage.gather[keywords[1]] != undefined) {
+            if (customGatherCommandStorage.gather[keywords[1]] !== undefined) {
                 if (storage.getFromChannelLevel(msg.channel, "gather.isGathering")) {
                     return GatherHelperService.sendGatherStatus(msg.channel);
                 } else {
                     storage.saveOnChannelLevel(msg.channel, "gather", {
                         customGame: keywords[1]
                     });
-    
+
                     return GatherHelperService.startGather(msg, args.title);
                 }
-            } 
+            }
         } else {
             return msg.reply("Try to use a game-specific command instead!");
         }

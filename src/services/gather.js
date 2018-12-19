@@ -7,7 +7,7 @@ const GatherHelperService = {
 
     sendGatherStatus(channel) {
         let currentRichEmbed = storage.getFromChannelLevel(channel, "gather.currentRichEmbed");
-        
+
         if (currentRichEmbed) {
             return channel.send(currentRichEmbed)
                 .then(m => {
@@ -30,7 +30,7 @@ const GatherHelperService = {
 
         let customGameKeyword = storage.getFromChannelLevel(channel, "gather.customGame");
         let customGameObject = customGatherCommandStorage.gather[customGameKeyword];
-        if (customGameObject != undefined) {
+        if (customGameObject !== undefined) {
             currentRichEmbed.setTitle(customGameObject.title);
             currentRichEmbed.setThumbnail(customGameObject.thumbnail);
         }
@@ -56,7 +56,7 @@ const GatherHelperService = {
             endTimeout: setTimeout(this.clearGathering, 1000 * 60 * 15, message.channel, message.client),
             joinListener: listener
         });
-        
+
         this.createGatherRichEmbed(
             {
                 username: message.author.username,
@@ -67,7 +67,7 @@ const GatherHelperService = {
         );
 
         message.client.on("message", listener);
-        
+
         return this.sendGatherStatus(message.channel);
     },
 
@@ -75,18 +75,18 @@ const GatherHelperService = {
         if (!storage.getFromChannelLevel(channel, "gather.isGathering")) {
             return;
         }
-    
+
         client.removeListener("message", storage.getFromChannelLevel(channel, "gather.joinListener"));
-    
+
         if (storage.getFromChannelLevel(channel, "gather.endTimeout")) {
             clearTimeout(storage.getFromChannelLevel(channel, "gather.endTimeout"));
         }
-    
+
         let currentRichEmbed = storage.getFromChannelLevel(channel, "gather.currentRichEmbed");
-    
+
         currentRichEmbed.setFooter("ENDED!");
         currentRichEmbed.setDescription("");
-        
+
         storage.getFromChannelLevel(channel, "gather.gatherMessages")
             .forEach(gM => gM.edit(currentRichEmbed));
 
@@ -103,7 +103,7 @@ const GatherHelperService = {
         return channel.send(currentRichEmbed);
     },
 
-    _joinListener (storage, message) {
+    _joinListener(storage, message) {
 
         function idCheck(user1, user2) {
             return user1.id === user2.id;
@@ -113,7 +113,7 @@ const GatherHelperService = {
         let playerList = storage.getFromChannelLevel(message.channel, "gather.playerList", true, []);
         let currentRichEmbed = storage.getFromChannelLevel(message.channel, "gather.currentRichEmbed");
         let gatherMessages = storage.getFromChannelLevel(message.channel, "gather.gatherMessages", true, []);
-    
+
         if (starterMessage && message.channel.id === starterMessage.channel.id) {
             let joiningUsers = [];
             let regexp = /^(<@(!)?\d+>\s*)+\+/;
@@ -129,29 +129,29 @@ const GatherHelperService = {
                 return;
             }
             message.client.emit("debug", `Gather join: type=${joinType} author="${message.author.tag}" content="${message.content}" cleanContent="${message.cleanContent}"`);
-            
+
             let note = message.content.split("+").slice(1).join("+");
 
             for (let i = 0; i < joiningUsers.length; ++i) {
                 let joiningUser = joiningUsers[i];
-                if (!playerList.some(idCheck.bind(this, joiningUser)) 
-                        && !note.includes(`${joiningUser}`)) {
+                if (!playerList.some(idCheck.bind(this, joiningUser))
+                    && !note.includes(`${joiningUser}`)) {
                     playerList.push(joiningUser);
-        
+
                     let m = `${playerList.length} - ${joiningUser}`;
                     if (note) {
                         m += `: ${note}`;
                     }
-        
+
                     currentRichEmbed.addField("\u200B", m);
-        
+
                     gatherMessages.forEach(gM => {
                         if (gM.editable) {
                             gM.edit(currentRichEmbed)
                                 .catch(error => message.client.emit("warn", `Cannot edit gather status message: ${error}`));
                         }
                     });
-        
+
                     if (message.deletable) {
                         message.delete(2000)
                             .catch(error => message.client.emit("warn", `Cannot delete gather join message: ${error}`));

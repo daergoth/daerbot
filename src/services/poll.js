@@ -10,10 +10,10 @@ const CSGO_ICON_URL = customGatherStorage.gather.csgo.thumbnail ||
 const PollHelperService = {
     generatePollEmbed(channel) {
         let poll = storage.getFromChannelLevel(channel, "poll");
-    
+
         if (poll && poll.voteCollector) {
             let sumVotes = poll.votes.reduce((prev, curr) => prev + curr, 0);
-    
+
             let result = [];
             for (let i = 0; i < poll.options.length; ++i) {
                 result.push({
@@ -24,7 +24,7 @@ const PollHelperService = {
             result.sort((a, b) => {
                 return b.votes - a.votes;
             });
-    
+
             let description = "";
             if (sumVotes >= 1) {
                 result.forEach((r) => {
@@ -33,31 +33,31 @@ const PollHelperService = {
             } else {
                 description = "No votes cast!";
             }
-    
+
             let embed = new Discord.RichEmbed()
                 .setAuthor(poll.author.username, poll.author.avatarURL)
                 .setTitle("**POLL: " + poll.question + "**")
                 .setDescription(description)
                 .setFooter(sumVotes + " total votes cast.")
                 .setColor([0, 0, 255]);
-    
+
             if (storage.getFromChannelLevel(channel, "poll.isCSGO", true, false)) {
                 embed.setThumbnail(CSGO_ICON_URL);
             }
-    
+
             return embed;
         }
     },
 
     clearPoll(channel) {
         let poll = storage.getFromChannelLevel(channel, "poll");
-    
+
         if (poll && poll.voteCollector) {
             poll.voteCollector.stop();
-    
+
             let embed = this.generatePollEmbed(channel);
             embed.setTitle("**CLOSED:** " + poll.question);
-    
+
             storage.saveOnChannelLevel(channel, "poll", {
                 author: undefined,
                 question: "",
@@ -67,19 +67,19 @@ const PollHelperService = {
                 votes: [],
                 isCSGO: false
             });
-            
+
             return channel.send(embed);
-        } 
+        }
     },
 
     isRunningPoll(channel) {
-        return storage.getFromChannelLevel(channel, "poll") != undefined;
+        return storage.getFromChannelLevel(channel, "poll") !== undefined;
     },
 
     startPoll(message, pollText) {
         let params = util.sanatizeCommandInput(pollText.split(";"))
             .filter((p, index, self) => {
-                return self.indexOf(p) == index;
+                return self.indexOf(p) === index;
             });
 
         if (params.length >= 3) {
@@ -107,9 +107,9 @@ const PollHelperService = {
             if (storage.getFromChannelLevel(message.channel, "poll.isCSGO", true, false)) {
                 embed.setThumbnail(CSGO_ICON_URL);
             }
-            
+
             let voteCollector = this._createVoteCollector(message.channel);
-            
+
             storage.saveOnChannelLevel(message.channel, "poll", {
                 author: {
                     username: message.author.username,
@@ -121,7 +121,7 @@ const PollHelperService = {
                 voteCollector,
                 votes: Array(options.length).fill(0),
             });
-            
+
             return message.channel.send(embed);
         } else {
             return message.reply("Invalid poll format! Example: .poll Question?;Option 1;Option 2");
@@ -140,7 +140,7 @@ const PollHelperService = {
     _pollFilter(storage, message) {
         let options = storage.getFromChannelLevel(message.channel, "poll.options");
         let voters = storage.getFromChannelLevel(message.channel, "poll.voters", true, []);
-    
+
         return !voters.includes(message.author) && (options.includes(message.content) || (parseInt(message.content) > 0 && parseInt(message.content) <= options.length));
     },
 
@@ -149,21 +149,21 @@ const PollHelperService = {
             .then(m => {
                 m.channel.send(m.author + " voted!");
             });
-    
+
         let poll = storage.getFromChannelLevel(message.channel, "poll");
-    
+
         let voteIndex = -1;
-    
+
         if (/^[\d]+$/.test(message.content)) {
             voteIndex = parseInt(message.content) - 1;
         } else {
             voteIndex = poll.options.indexOf(message.content);
         }
-    
+
         poll.votes[voteIndex]++;
-    
+
         poll.voters.push(message.author);
-    
+
         storage.saveOnChannelLevel(message.channel, "poll", {
             votes: poll.votes,
             voters: poll.voters

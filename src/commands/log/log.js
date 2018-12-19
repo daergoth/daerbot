@@ -22,7 +22,7 @@ function logListener(oldMember, newMember) {
         } else if (!newMember.voiceChannel) {
             logChannel.send(`${oldMember.user.username} disconnected from ${oldMember.voiceChannel}!`);
         } else {
-            if (oldMember.voiceChannel != newMember.voiceChannel) {
+            if (oldMember.voiceChannel !== newMember.voiceChannel) {
                 logChannel.send(`${oldMember.user.username} switched from ${oldMember.voiceChannel} to ${newMember.voiceChannel}`);
             }
         }
@@ -56,11 +56,11 @@ module.exports = class LogCommand extends commando.Command {
 
     run(msg, args) {
         let logStatus = storage.getFromGuildLevel(msg.guild, "log.status", true, false);
-        
-        if (args.status.length == 0) {
-            return msg.reply(`Currently logging is turned **${logStatus?"ON":"OFF"}**!`);
+
+        if (args.status.length === 0) {
+            return msg.reply(`Currently logging is turned **${logStatus ? "ON" : "OFF"}**!`);
         } else {
-            switch(args.status) {
+            switch (args.status) {
             case "on":
                 logStatus = true;
                 break;
@@ -72,12 +72,12 @@ module.exports = class LogCommand extends commando.Command {
             }
 
             storage.saveOnGuildLevel(msg.guild, "log.status", logStatus);
-            
+
             if (!msg.client.listeners("voiceStateUpdate").includes(logListener)) {
                 msg.client.on("voiceStateUpdate", logListener);
             }
-        
-            return msg.reply(`Logging turned **${logStatus?"ON":"OFF"}**!`);
+
+            return msg.reply(`Logging turned **${logStatus ? "ON" : "OFF"}**!`);
         }
     }
 };

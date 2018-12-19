@@ -3,7 +3,7 @@ const defaultDbObject = {
     messages: Object.create(null),
     channels: Object.create(null),
     guilds: Object.create(null)
-}; 
+};
 Object.setPrototypeOf(defaultDbObject, null);
 
 const Storage = {
@@ -41,18 +41,17 @@ const Storage = {
 
     _save(level, idObj, query, saveObject) {
         let path = query.split(".");
-        
+
         if (!level[idObj.id]) {
             level[idObj.id] = Object.create(null);
         }
-        let targetRoot = level[idObj.id];
-        let target = targetRoot;
+        let target = level[idObj.id];
 
         for (let i = 0; i < path.length; ++i) {
             let p = path[i];
 
             if (target && p in target) {
-                if (i == path.length - 1) {
+                if (i === path.length - 1) {
                     if (typeof saveObject === "object") {
                         Object.assign(target[p], saveObject);
                     } else {
@@ -62,7 +61,7 @@ const Storage = {
                     target = target[p];
                 }
             } else {
-                if (i == path.length - 1) {
+                if (i === path.length - 1) {
                     target[p] = saveObject;
                 } else {
                     target[p] = Object.create(null);
@@ -76,7 +75,7 @@ const Storage = {
 
     _get(level, idObj, query, isCreate, defaultValue) {
         let path = query.split(".");
-        
+
         if (!level[idObj.id]) {
             level[idObj.id] = Object.create(null);
         }
@@ -93,7 +92,7 @@ const Storage = {
                         result = Object.create(null);
                     }
 
-                    result[p] = (i == path.length - 1) ? defaultValue : Object.create(null);
+                    result[p] = (i === path.length - 1) ? defaultValue : Object.create(null);
                     result = result[p];
                 } else {
                     return undefined;
