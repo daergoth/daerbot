@@ -54,18 +54,18 @@ const ChannelService = {
 
     createPersonalChannel(owner, channelType) {
         let categoryChannelPromise = 
-            new Promise(resolve => resolve(owner.guild.channels.filter(channel => channel.name === "Custom Channels" && channel.type === "category")));
+            new Promise(resolve => resolve(owner.guild.channels.filter(channel => channel.name === "Personal Channels" && channel.type === "category")));
 
         categoryChannelPromise
             .then(catChannel => {
                 if (catChannel.size === 0) {
-                    return owner.guild.createChannel("Custom Channels", "category");
+                    return owner.guild.createChannel("Personal Channels", "category");
                 } else {
                     return catChannel.first();
                 }
             })
             .then(catChannel => {
-                owner.guild.createChannel(owner.displayName + "-custom-channel", channelType)
+                owner.guild.createChannel(owner.displayName + "-personal-channel", channelType)
                     .then(customChannel => {
                         customChannel.setParent(catChannel);
                         return customChannel;
