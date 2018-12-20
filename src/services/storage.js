@@ -6,6 +6,7 @@ const defaultDbObject = {
 };
 Object.setPrototypeOf(defaultDbObject, null);
 
+// TODO: deprecate this in favor of SQLite settings provider
 const Storage = {
     Storage() {
         this.db = Object.assign(Object.create(null), defaultDbObject);

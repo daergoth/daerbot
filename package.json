@@ -19,6 +19,7 @@
     "require-all": "^3.0.0",
     "sodium": "^3.0.2",
     "sqlite": "^3.0.0",
+    "sqlite3": "^4.0.4",
     "stringstream": "^1.0.0",
     "uws": "^99.0.0",
     "ytdl-core": "^0.28.3"
