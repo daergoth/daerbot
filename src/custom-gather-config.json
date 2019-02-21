@@ -59,6 +59,10 @@
         "pinturillo": {
             "thumbnail": "https://www.pinturillo2.com/data/img/logotop.png",
             "title": "Pinturillo?"
+        },
+        "apex": {
+            "thumbnail": "https://data3.origin.com/asset/content/dam/originx/web/app/games/apex/apex/F2P/APEX_gdp_logo_ww_v2.png/faf6a423-e156-48af-b71e-2702fac826a0/original.png",
+            "title": "Apex Legends?"
         }
     }
 }
