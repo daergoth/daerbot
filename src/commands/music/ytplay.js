@@ -68,7 +68,7 @@ module.exports = class PokeCommand extends commando.Command {
                                         dispatcher: dispatcher
                                     });
                                 })
-                                .catch(error => msg.client.emit("error", error));
+                                .catch(error => msg.client.emit("error", `Error during YT music play channel join: ${error}`));
                         } else {
                             return msg.reply("You have to join a voice channel first!");
                         }
