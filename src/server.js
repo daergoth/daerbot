@@ -64,7 +64,7 @@ client
 
 client.setProvider(
     sqlite.open(path.join(__dirname, "database.sqlite3")).then(db => new commando.SQLiteProvider(db))
-).catch(error => client.emit("error", `${error}`));
+).catch(error => client.emit("error", `Error during database provider set: ${Object.entries(error)}`));
 
 client.registry
     //.registerGroup("alarm", "Alarm")
