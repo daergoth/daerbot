@@ -4,17 +4,17 @@ const default_guild_timezone = "GMT+2";
 const TimerService = {
 
     getMillisUntilTime(targetTimeString) {
-        let nowUtc = moment().utc();
-        console.log(`Now UTC: ${nowUtc.format()}`);
+        let now = moment().tz(default_guild_timezone, true);
+        console.log(`Now: ${now.format()}`);
 
-        let targetUtc = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone, true).utc();
-        console.log(`Target UTC: ${targetUtc.format()}`);
+        let target = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone, true);
+        console.log(`Target: ${target.format()}`);
 
-        if (targetUtc.isAfter(nowUtc)) {
-            console.log("Target UTC is after Now UTC");
-            return targetUtc.diff(nowUtc);
+        if (target.isAfter(now)) {
+            console.log("Target is after Now");
+            return target.diff(now);
         } else {
-            return targetUtc.add(1, "day").diff(nowUtc);
+            return target.add(1, "day").diff(now);
         }
     },
 
