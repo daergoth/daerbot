@@ -7,7 +7,7 @@ const TimerService = {
         let nowUtc = moment().utc();
         console.log(`Now UTC: ${nowUtc.format()}`);
 
-        let targetUtc = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone).utc();
+        let targetUtc = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone, true).utc();
         console.log(`Target UTC: ${targetUtc.format()}`);
 
         if (targetUtc.isAfter(nowUtc)) {
