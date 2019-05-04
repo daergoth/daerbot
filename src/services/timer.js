@@ -4,7 +4,7 @@ const default_guild_timezone = "GMT+2";
 const TimerService = {
 
     getMillisUntilTime(targetTimeString) {
-        let now = moment().tz(default_guild_timezone, true);
+        let now = moment().tz(default_guild_timezone);
         console.log(`Now: ${now.format()}`);
 
         let target = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone, true);
