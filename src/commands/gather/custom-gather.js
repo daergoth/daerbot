@@ -1,7 +1,7 @@
 const commando = require("discord.js-commando");
 
 const storage = require("../../services/storage");
-const customGatherCommandStorage = require("../../custom-gather-config.json");
+const customGatherCommandStorage = require("../../../resources/custom-gather-config.json");
 
 const GatherHelperService = require("../../services/gather");
 

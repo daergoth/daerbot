@@ -1,3 +1,5 @@
+const notificationSoundPath = "../../resources/alarm.mp3";
+
 const NotificationService = {
 
     notifyUser(user, times, messageStr = "Poke", before = () => {}) {
@@ -18,6 +20,26 @@ const NotificationService = {
             });
       
         return dmChannelPromise;
+    },
+
+    notifyTextChannel(textChannel, times = 1, messageStr = "Alarm", before = () => {}) {
+        before(textChannel);
+
+        for (let i = 0; i < times; ++i) {
+            textChannel.send(messageStr);
+        }
+      
+        return textChannel;
+    },
+
+    notifyVoiceChannel(voiceChannel, notifySound = notificationSoundPath, before = () => {}) {
+        before(voiceChannel);
+
+        return voiceChannel.join()
+            .then(connection => {
+                const dispatcher = connection.playFile(notifySound);
+            })
+            .catch(err => voiceChannel.client.emit("error", `Notify voice channel error: ${err}`));
     }
 };
 

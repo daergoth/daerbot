@@ -67,7 +67,7 @@ client.setProvider(
 ).catch(error => client.emit("error", `Error during database provider set: ${Object.entries(error)}`));
 
 client.registry
-    //.registerGroup("alarm", "Alarm")
+    .registerGroup("alarm", "Alarm")
     .registerGroup("channel", "Private channels")
     .registerGroup("gather", "Gather")
     .registerGroup("log", "Server log")

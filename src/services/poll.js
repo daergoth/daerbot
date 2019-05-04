@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const util = require("./util");
 const storage = require("./storage");
 
-const customGatherStorage = require("../custom-gather-config.json");
+const customGatherStorage = require("../../resources/custom-gather-config.json");
 const CSGO_ICON_URL = customGatherStorage.gather.csgo.thumbnail ||
     "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg";
 
