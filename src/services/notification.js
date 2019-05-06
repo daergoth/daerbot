@@ -1,4 +1,5 @@
-const notificationSoundPath = "../../resources/alarm.mp3";
+const {resolve} = require("path");
+const notificationSoundPath = resolve(__dirname, "../../resources/metronome.mp3");
 
 const NotificationService = {
 
@@ -38,6 +39,10 @@ const NotificationService = {
         return voiceChannel.join()
             .then(connection => {
                 const dispatcher = connection.playFile(notifySound);
+                dispatcher.on("end", reason => {
+                    connection.disconnect();
+                    console.log(reason);
+                });
             })
             .catch(err => voiceChannel.client.emit("error", `Notify voice channel error: ${err}`));
     }

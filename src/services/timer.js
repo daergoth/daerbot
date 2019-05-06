@@ -1,13 +1,17 @@
 const moment = require("moment-timezone");
 const default_guild_timezone = "Europe/Budapest";
 
+const storage = require("../services/storage");
+
 const TimerService = {
 
-    getMillisUntilTime(targetTimeString) {
+    getMillisUntilTime(targetTimeString, user) {
+        let timezone = storage.getFromUserLevel(user, "timezone", true, default_guild_timezone);
+
         let now = moment.tz();
         console.log(`Now: ${now.format()}`);
 
-        let target = moment(targetTimeString, ["h:m a", "H:m"]).tz(default_guild_timezone, true);
+        let target = moment(targetTimeString, ["h:m a", "H:m"]).tz(timezone, true);
         console.log(`Target: ${target.format()}`);
 
         if (target.isAfter(now)) {

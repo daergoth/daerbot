@@ -1,6 +1,6 @@
 const commando = require("discord.js-commando");
-const timerService = require("../../services/timer");
-const notificationService = require("../../services/notification");
+const moment = require("moment");
+const alarmService = require("../../services/alarm");
 
 module.exports = class AlarmCommand extends commando.Command {
     constructor(client) {
@@ -10,6 +10,7 @@ module.exports = class AlarmCommand extends commando.Command {
             memberName: "alarm",
             description: "Sets up an alarm for given time with given text.",
             examples: ["alarm 18:00 Alarm text!"],
+            aliases: ["textalarm"],
             args: [
                 {
                     key: "time",
@@ -29,13 +30,14 @@ module.exports = class AlarmCommand extends commando.Command {
     }
 
     run(msg, args) {
-        let millisUntilTime = timerService.getMillisUntilTime(args["time"]);
+        let millisUntilTime = alarmService.createTextAlarm(msg.author, msg.channel, args["time"], args["message"]);
+        let humanizedMillis = moment.duration(millisUntilTime, "milliseconds").humanize();
 
-        timerService.executeAfterMillis(millisUntilTime, () => {
-            notificationService.notifyTextChannel(msg.channel, 1, args["message"]);
-        });
+        msg.delete()
+            .catch(error => msg.client.emit("error", `Alarm set message delete error: ${error}`));
 
-        msg.client.emit("info", `Alarm set for ${millisUntilTime} milliseconds with message: ${args["message"]}`);
-
+        msg.reply(`Alarm set for ${args["time"]} (${humanizedMillis} left) with message: ${args["message"]}`)
+            .then(msg => msg.client.emit("info", `Alarm set for ${args["time"]} (${humanizedMillis} left, ${millisUntilTime}ms) with message: ${args["message"]}`))
+            .catch(error => msg.client.emit("error", `Alarm set message reply error: ${error}`));
     }
 };
