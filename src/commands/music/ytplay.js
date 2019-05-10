@@ -32,7 +32,7 @@ module.exports = class PokeCommand extends commando.Command {
             broadcast.end();
         }
 
-        if (!ytdl.validateLink(args.youtubeUrl)) {
+        if (!ytdl.validateURL(args.youtubeUrl)) {
             return msg.reply("Invalid YouTube link!");
         }
 
@@ -51,7 +51,7 @@ module.exports = class PokeCommand extends commando.Command {
                 });
             })
             .then(function videoInfoReceived() {
-                msg.guild.fetchMember(msg)
+                msg.guild.fetchMember(msg.author)
                     .then(guildMember => {
                         let voiceChannel = guildMember.voiceChannel;
 
