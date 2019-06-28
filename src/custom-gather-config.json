@@ -63,6 +63,18 @@
         "apex": {
             "thumbnail": "https://data3.origin.com/asset/content/dam/originx/web/app/games/apex/apex/F2P/APEX_gdp_logo_ww_v2.png/faf6a423-e156-48af-b71e-2702fac826a0/original.png",
             "title": "Apex Legends?"
+        },
+        "cq": {
+            "thumbnail": "https://steamcdn-a.akamaihd.net/steam/apps/905370/header.jpg?t=1560512103",
+            "title": "Conqueror's Blade?"
+        },
+        "tft": {
+            "thumbnail": "https://vignette.wikia.nocookie.net/leagueoflegends/images/e/e6/Teamfight_Tactics_Logo.png/revision/latest/scale-to-width-down/500?cb=20190627043029",
+            "title": "Teamfight Tactics?"
+        },
+        "underlords": {
+            "thumbnail": "https://underlords.com/public/images/teaser/logo.png",
+            "title": "Dota Underlords?"
         }
     }
 }
