@@ -79,6 +79,10 @@
         "warzone": {
             "thumbnail": "https://upload.wikimedia.org/wikipedia/en/7/71/COD_Warzone_cover_art.jpg",
             "title": "Call of Duty: Warzone?"
+        },
+        "amongus": {
+            "thumbnail": "https://steamcdn-a.akamaihd.net/steam/apps/945360/header.jpg?t=1598556351",
+            "title": "Amoung Us?"
         }
     }
 }
