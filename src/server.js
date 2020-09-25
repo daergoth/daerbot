@@ -69,6 +69,7 @@ client.setProvider(
 client.registry
     //.registerGroup("alarm", "Alarm")
     .registerGroup("channel", "Private channels")
+    .registerGroup("donate", "Donation")
     .registerGroup("gather", "Gather")
     .registerGroup("log", "Server log")
     .registerGroup("me", "/Me")
