@@ -1,6 +1,7 @@
-const commando = require("discord.js-commando");
+import { Command, CommandoMessage } from "discord.js-commando";
 
-module.exports = class SayCommand extends commando.Command {
+
+module.exports = class SayCommand extends Command {
     constructor(client) {
         super(client, {
             name: "say",
@@ -19,10 +20,10 @@ module.exports = class SayCommand extends commando.Command {
         });
     }
 
-    run(msg, args) {
-        return msg.delete()
+    public run(message: CommandoMessage, args) {
+        return message.delete()
             .then(() => {
-                msg.channel.send(args.text);
+                return message.channel.send(args.text);
             });
     }
 };

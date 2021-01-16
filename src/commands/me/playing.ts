@@ -1,6 +1,6 @@
-const commando = require("discord.js-commando");
+import { Command, CommandoMessage } from "discord.js-commando";
 
-module.exports = class PlayingCommand extends commando.Command {
+module.exports = class PlayingCommand extends Command {
     constructor(client) {
         super(client, {
             name: "playing",
@@ -20,11 +20,10 @@ module.exports = class PlayingCommand extends commando.Command {
         });
     }
 
-    run(msg, args) {
-        msg.client.user.setPresence({
-            game: {
-                name: args.playing
-            }
+    public run(message: CommandoMessage, args) {
+        message.client.user.setActivity({
+            name: args.playing
         });
+        return undefined;
     }
 };
