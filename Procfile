@@ -1,1 +1,1 @@
-web: npm install tsc --global --force && npm start
+web: npm install typescript --global --force && npm start

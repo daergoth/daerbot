@@ -3,6 +3,7 @@ TODO.md
 _site/
 storage.json
 database.sqlite3
+dist/
 
 # Logs
 logs
