@@ -1,1 +1,1 @@
-worker: node src/server.js
+web: npm install tsc --global --force && npm start
