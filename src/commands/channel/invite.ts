@@ -1,10 +1,11 @@
-const commando = require("discord.js-commando");
-const channelService = require("../../services/channel");
+import { Command, CommandoMessage } from "discord.js-commando";
+import { ChannelService } from "../../services/channel";
 
-module.exports = class InviteCommand extends commando.Command {
+module.exports = class InviteCommand extends Command {
     constructor(client) {
         super(client, {
             name: "inv",
+            aliases: ["invite"],
             group: "channel",
             memberName: "inv",
             description: "Invite another person to your private channel.",
@@ -21,12 +22,15 @@ module.exports = class InviteCommand extends commando.Command {
         });
     }
 
-    run(msg, args) {
+    public run(message: CommandoMessage, args) {
         // Deleting the message first for maximum discretion.
-        msg.delete();
+        message.delete();
 
-        let inviteeList = args["invitee"];
-        inviteeList = inviteeList.filter(invitee => invitee.id !== msg.author.id);
-        inviteeList.forEach(invitee => channelService.inviteToPrivateChannel(msg.member, invitee));
+        const service = ChannelService.getInstance();
+        let inviteeList = args.invitee;
+        inviteeList = inviteeList.filter(invitee => invitee.id !== message.author.id);
+        inviteeList.forEach(invitee => service.inviteToPrivateChannel(message.member, invitee));
+
+        return undefined;
     }
-};
+}

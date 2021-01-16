@@ -1,8 +1,7 @@
-const commando = require("discord.js-commando");
+import { Command, CommandoMessage } from "discord.js-commando";
+import { PollHelperService } from "../../services/poll";
 
-const PollHelperService = require("../../services/poll");
-
-module.exports = class PollCommand extends commando.Command {
+module.exports = class PollCommand extends Command {
     constructor(client) {
         super(client, {
             name: "poll",
@@ -22,7 +21,8 @@ module.exports = class PollCommand extends commando.Command {
         });
     }
 
-    run(msg, args) {
-        return PollHelperService.startPoll(msg, args.text);
+    public run(message: CommandoMessage, args) {
+        const service = PollHelperService.getInstance();
+        return service.startPoll(message, args.text);
     }
 };
