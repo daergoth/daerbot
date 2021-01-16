@@ -1,7 +1,7 @@
-const commando = require("discord.js-commando");
-const channelService = require("../../services/channel");
+import { Command, CommandoMessage } from "discord.js-commando";
+import { ChannelService, ChannelType } from "../../services/channel";
 
-module.exports = class PrivateChannelCommand extends commando.Command {
+module.exports = class PrivateChannelCommand extends Command {
     constructor(client) {
         super(client, {
             name: "pchannel",
@@ -26,18 +26,20 @@ module.exports = class PrivateChannelCommand extends commando.Command {
         });
     }
 
-    run(msg, args) {
+    public run(message: CommandoMessage, args) {
         // Deleting the message first for maximum discretion.
-        msg.delete();
+        message.delete();
 
-        channelService.createPersonalChannel(msg.member, "voice", true, true)
+        const service = ChannelService.getInstance();
+        service.createPersonalChannel(message.member, ChannelType.VOICE, true, true)
             .then(privateChannel => {
-                let inveteeList = args["invitee"];
+                let inveteeList = args.invitee;
                 if (typeof inveteeList !== "string") {
                     // Invitees specified
-                    inveteeList = inveteeList.filter(invitee => invitee.id !== msg.author.id);
-                    inveteeList.forEach(invitee => channelService.inviteToPrivateChannel(msg.member, invitee, privateChannel));
+                    inveteeList = inveteeList.filter(invitee => invitee.id !== message.author.id);
+                    inveteeList.forEach(invitee => service.inviteToPrivateChannel(message.member, invitee, privateChannel));
                 }
             });
+        return undefined;
     }
-};
+}

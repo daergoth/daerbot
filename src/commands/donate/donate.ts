@@ -1,14 +1,14 @@
-const commando = require("discord.js-commando");
-const Discord = require("discord.js");
+import { MessageEmbed } from "discord.js";
+import { Command, CommandoMessage } from "discord.js-commando";
 
-module.exports = class DonateCommand extends commando.Command {
+module.exports = class DonateCommand extends Command {
     constructor(client) {
         super(client, {
             name: "donate",
             group: "donate",
             memberName: "donate",
             description: "Donate to given user.",
-            examples: ["donate @person $5"],
+            examples: ["donate @person Surprise!"],
             args: [
                 {
                     key: "user",
@@ -28,27 +28,27 @@ module.exports = class DonateCommand extends commando.Command {
         });
     }
 
-    getFakeCurrencies() {
+    private getFakeCurrencies() {
         return ["gold coins", "credits", "bottle caps", "souls", "nickels", "space bucks", "Monopoly Dollar", "galleons", "Simoleons"]
     }
 
-    run(msg, args) {
-        let author = {
-            username: msg.author.username,
-            avatarURL: msg.author.displayAvatarURL
+    public run(message: CommandoMessage, args) {
+        const author = {
+            username: message.author.username,
+            avatarURL: message.author.displayAvatarURL()
         }
 
-        let randomAmount = Math.floor(Math.random() * 49) + 2
-        let randomCurrency = Math.floor(Math.random() * this.getFakeCurrencies().length)
+        const randomAmount = Math.floor(Math.random() * 49) + 2
+        const randomCurrency = Math.floor(Math.random() * this.getFakeCurrencies().length)
 
-        let currentRichEmbed = new Discord.RichEmbed()
+        const currentRichEmbed = new MessageEmbed()
             .setAuthor(author.username, author.avatarURL)
             .setTitle(`Donated ${randomAmount} ${this.getFakeCurrencies()[randomCurrency]} to ${args.user.username}`)
             .setThumbnail("https://image.shutterstock.com/image-vector/money-vector-icon-bank-note-260nw-1035443560.jpg")
             .setDescription(args.note)
             .setColor([0, 100, 0]);
 
-        msg.channel.send(currentRichEmbed);
+        return message.channel.send(currentRichEmbed);
     }
-    
+
 };
