@@ -27,7 +27,7 @@
     "ytdl-core": "^0.28.3"
   },
   "engines": {
-    "node": "10.14.2"
+    "node": "14.x"
   },
   "devDependencies": {
     "@types/express": "^4.17.9",
@@ -46,6 +46,6 @@
     "discord.js",
     "bot"
   ],
-  "author": "István Lakatos",
+  "author": "daergoth",
   "license": "MIT"
 }
