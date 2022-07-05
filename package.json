@@ -4,7 +4,7 @@
   "description": "A simple Discord Bot developed for fun",
   "main": "src/server.ts",
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.8.0",
     "bluebird": "^3.7.2",
     "bufferutil": "^4.0.3",
     "common-tags": "^1.8.0",
